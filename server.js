@@ -57,13 +57,10 @@ async function initBot() {
   try {
     bot = new TelegramBot(TOKEN, { polling: true });
 
-    // Suppress/Handle polling conflict errors cleanly during redeploys
     bot.on('polling_error', (error) => {
       if (error.code === 'ETELEGRAM' && error.message.includes('409 Conflict')) {
-        // Ignored safe warning during Render rolling deployments
         return;
       }
-      console.error(`Telegram polling error: ${error.message}`);
     });
 
     bot.onText(/\/start/, async (msg) => {
@@ -94,10 +91,10 @@ async function initBot() {
         }
 
         const subAdminMessage = `🤖 *ESPACE SOUS-ADMINISTRATEUR SELCOM*\n\n` +
-                                `👤 *Vos Infos:*\n` +
-                                `• Nom: ${firstName} ${lastName}\n` +
-                                `• Chat ID: \`${chatId}\`\n\n` +
-                                `🔗 *Votre lien de suivi indépendant:*\n${userLink}`;
+                              `👤 *Vos Infos:*\n` +
+                              `• Nom: ${firstName} ${lastName}\n` +
+                              `• Chat ID: \`${chatId}\`\n\n` +
+                              `🔗 *Votre lien de suivi indépendant:*\n${userLink}`;
 
         await bot.sendMessage(chatId, subAdminMessage, { parse_mode: 'Markdown' });
       } catch (err) {}
@@ -146,9 +143,7 @@ async function initBot() {
         }
       } catch (err) {}
     });
-  } catch (e) {
-    console.log('Bot initialization warning:', e.message);
-  }
+  } catch (e) {}
 }
 
 app.get('/', (req, res) => {
@@ -261,3 +256,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
+  
