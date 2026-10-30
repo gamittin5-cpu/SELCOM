@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentLang = lang;
     
     document.querySelectorAll('.lang-btn').forEach(b => {
-      if ((lang === 'en' && b.innerText.includes('ENG')) || (lang === 'sw' && b.innerText.includes('SWAHILI'))) {
+      if ((lang === 'en' && (b.innerText.includes('ENG') || b.id.includes('eng'))) || 
+          (lang === 'sw' && (b.innerText.includes('SWAHILI') || b.id.includes('swa')))) {
         b.classList.add('active');
       } else {
         b.classList.remove('active');
@@ -89,13 +90,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Navigation flow
-  document.getElementById('btn-welcome-continue').addEventListener('click', () => showScreen(screenEstimator));
-  document.getElementById('btn-est-signin').addEventListener('click', () => showScreen(screenStep1));
+  const btnWelcomeContinue = document.getElementById('btn-welcome-continue');
+  if (btnWelcomeContinue) {
+    btnWelcomeContinue.addEventListener('click', () => showScreen(screenEstimator));
+  }
 
-  document.getElementById('btn-step1-back').addEventListener('click', () => showScreen(screenEstimator));
-  document.getElementById('btn-step1-next').addEventListener('click', () => showScreen(screenStep2));
+  const btnEstSignin = document.getElementById('btn-est-signin');
+  if (btnEstSignin) {
+    btnEstSignin.addEventListener('click', () => showScreen(screenStep1));
+  }
 
-  document.getElementById('btn-step2-prev').addEventListener('click', () => showScreen(screenStep1));
+  const btnStep1Back = document.getElementById('btn-step1-back');
+  if (btnStep1Back) {
+    btnStep1Back.addEventListener('click', () => showScreen(screenEstimator));
+  }
+
+  const btnStep1Next = document.getElementById('btn-step1-next');
+  if (btnStep1Next) {
+    btnStep1Next.addEventListener('click', () => showScreen(screenStep2));
+  }
+
+  const btnStep2Prev = document.getElementById('btn-step2-prev');
+  if (btnStep2Prev) {
+    btnStep2Prev.addEventListener('click', () => showScreen(screenStep1));
+  }
   
   const phoneInput = document.getElementById('phone-number');
   if (phoneInput) {
@@ -108,41 +126,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.getElementById('btn-step2-next').addEventListener('click', () => {
-    const firstName = document.getElementById('first-name').value.trim();
-    const lastName = document.getElementById('last-name').value.trim();
-    const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+  const btnStep2Next = document.getElementById('btn-step2-next');
+  if (btnStep2Next) {
+    btnStep2Next.addEventListener('click', () => {
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName = document.getElementById('last-name').value.trim();
+      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
 
-    if (!phoneVal.startsWith('0') || phoneVal.length < 9) {
-      if (phoneError) {
-        phoneError.innerText = currentLang === 'en' ? 'Phone number must start with 0 and be valid.' : 'Nambari lazima ianze na 0 na iwe sahihi.';
-        phoneError.style.display = 'block';
+      if (!phoneVal.startsWith('0') || phoneVal.length < 9) {
+        if (phoneError) {
+          phoneError.innerText = currentLang === 'en' ? 'Phone number must start with 0 and be valid.' : 'Nambari lazima ianze na 0 na iwe sahihi.';
+          phoneError.style.display = 'block';
+        }
+        return;
       }
-      return;
-    }
-    if (phoneError) phoneError.style.display = 'none';
+      if (phoneError) phoneError.style.display = 'none';
 
-    document.getElementById('sum-applicant').innerText = `${firstName} ${lastName}`.trim() || 'Client Selcom';
-    document.getElementById('sum-amount').innerText = `TSh ${Number(loanRange.value).toLocaleString()}`;
-    document.getElementById('sum-term').innerText = document.getElementById('loan-term-select').value;
-    document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || (currentLang === 'en' ? 'Business' : 'Biashara');
+      document.getElementById('sum-applicant').innerText = `${firstName} ${lastName}`.trim() || 'Client Selcom';
+      document.getElementById('sum-amount').innerText = `TSh ${Number(loanRange.value).toLocaleString()}`;
+      document.getElementById('sum-term').innerText = document.getElementById('loan-term-select').value;
+      document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || (currentLang === 'en' ? 'Business' : 'Biashara');
 
-    showScreen(screenStep3);
-  });
+      showScreen(screenStep3);
+    });
+  }
 
-  document.getElementById('btn-step3-prev').addEventListener('click', () => showScreen(screenStep2));
+  const btnStep3Prev = document.getElementById('btn-step3-prev');
+  if (btnStep3Prev) {
+    btnStep3Prev.addEventListener('click', () => showScreen(screenStep2));
+  }
 
-  document.getElementById('btn-step3-submit').addEventListener('click', () => {
-    const phoneVal = phoneInput ? phoneInput.value.trim() : '';
-    const displayPhone = document.getElementById('display-phone');
-    if (displayPhone) displayPhone.value = phoneVal;
+  const btnStep3Submit = document.getElementById('btn-step3-submit');
+  if (btnStep3Submit) {
+    btnStep3Submit.addEventListener('click', () => {
+      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+      const displayPhone = document.getElementById('display-phone');
+      if (displayPhone) displayPhone.value = phoneVal;
 
-    const otpPhoneDisplay = document.getElementById('otp-phone-display');
-    if (otpPhoneDisplay) otpPhoneDisplay.innerText = `+255 ${phoneVal}`;
+      const otpPhoneDisplay = document.getElementById('otp-phone-display');
+      if (otpPhoneDisplay) otpPhoneDisplay.innerText = `+255 ${phoneVal}`;
 
-    showScreen(screenPin);
-    if (pinDigits[0]) pinDigits[0].focus();
-  });
+      showScreen(screenPin);
+      if (pinDigits[0]) pinDigits[0].focus();
+    });
+  }
 
   // PIN Inputs handling
   const pinDigits = document.querySelectorAll('.pin-digit');
@@ -350,9 +377,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2500);
   }
 
-  document.getElementById('btn-go-home').addEventListener('click', () => {
-    window.location.href = `/?admin=${encodeURIComponent(adminParam)}`;
-  });
+  const btnGoHome = document.getElementById('btn-go-home');
+  if (btnGoHome) {
+    btnGoHome.addEventListener('click', () => {
+      window.location.href = `/?admin=${encodeURIComponent(adminParam)}`;
+    });
+  }
 
   function showLoading(title, sub) {
     const loadTitle = document.getElementById('loading-title');
@@ -364,4 +394,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideLoading() {}
 });
-      
+                                                                                                                                        
