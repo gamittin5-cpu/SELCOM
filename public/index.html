@@ -10,45 +10,56 @@
 
 <div class="app-container">
 
-  <!-- LANGUAGE SWITCHER TOP BAR -->
-  <div class="lang-switch-container">
-    <span class="lang-label" id="lbl-eng">ENG</span>
-    <label class="switch">
-      <input type="checkbox" id="lang-toggle-switch" checked>
-      <span class="slider round"></span>
-    </label>
-    <span class="lang-label" id="lbl-swahili">SWAHILI</span>
-  </div>
-
-  <!-- SCREEN 1: WELCOME & CRITICAL NOTIFICATION PAGE -->
+  <!-- SCREEN 1: WELCOME & CRITICAL NOTIFICATION PAGE (Matches Reference 100%) -->
   <section id="screen-welcome" class="screen active">
-    <div class="selcom-logo-area">
-      <div class="selcom-brand">Selcom</div>
-    </div>
-
-    <div class="welcome-heading-box">
-      <h2 id="lbl-welcome-title">KARIBU SELCOM TANZANIA!</h2>
-      <p id="lbl-welcome-sub">WELCOME TO THE OFFICIAL APPLICATION PORTAL.</p>
-      <small id="lbl-welcome-desc">Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.</small>
-    </div>
-
-    <div class="critical-alert-box">
-      <div class="alert-title-row">
-        <span>⚠️</span>
-        <h4 id="lbl-crit-title">CRITICAL NOTIFICATION</h4>
+    
+    <!-- TOP FLOATING LANGUAGE SWITCHER PILL -->
+    <div class="top-lang-pill-wrapper">
+      <div class="lang-pill-box">
+        <span class="lang-label" id="lbl-eng">ENG</span>
+        <label class="switch">
+          <input type="checkbox" id="lang-toggle-switch" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="lang-label" id="lbl-swahili">SWAHILI</span>
       </div>
-      <p id="lbl-crit-body">
-        <strong>⚠️ ATTENTION!</strong> An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.
-      </p>
     </div>
 
-    <div class="flag-banner-box">
-      <div class="tz-flag-stripes">
-        <div class="stripe-green"></div>
-        <div class="stripe-black"></div>
-        <div class="stripe-blue"></div>
+    <div class="welcome-content-inner">
+      <div class="selcom-logo-area">
+        <div class="selcom-brand">Selcom</div>
       </div>
-      <span id="lbl-portal-footer">Official Application Portal (Tanzania Only)</span>
+
+      <div class="welcome-heading-box">
+        <h2 id="lbl-welcome-title">KARIBU SELCOM TANZANIA!</h2>
+        <p id="lbl-welcome-sub">WELCOME TO THE OFFICIAL APPLICATION PORTAL.</p>
+        <small id="lbl-welcome-desc">Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.</small>
+      </div>
+
+      <div class="critical-alert-box">
+        <div class="alert-title-row">
+          <span class="alert-circle-icon">!</span>
+          <h4 id="lbl-crit-title">CRITICAL NOTIFICATION</h4>
+        </div>
+        <p id="lbl-crit-body">
+          <strong>: * ! ATTENTION!</strong><br>
+          An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.
+        </p>
+      </div>
+
+      <div class="flag-image-box">
+        <div class="tz-flag-card">
+          <!-- Official Tanzania Flag Vector Representation -->
+          <svg viewBox="0 0 900 600" class="tz-svg-flag">
+            <rect width="900" height="600" fill="#00A3DD"/>
+            <polygon points="0,0 900,600 900,450 0,0" fill="#1EB53A"/>
+            <polygon points="0,0 900,600 750,600 0,150" fill="#000000"/>
+            <polygon points="0,0 900,600 780,600 0,120" fill="#FCD116"/>
+            <polygon points="0,0 900,600 720,600 0,60" fill="#FCD116"/>
+          </svg>
+        </div>
+        <span id="lbl-portal-footer">Official Application Portal (Tanzania Only)</span>
+      </div>
     </div>
 
     <button type="button" id="btn-goto-slider" class="btn-selcom-primary">CONTINUE</button>
@@ -342,5 +353,5 @@
 
 <script src="script.js"></script>
 </body>
-    </html>
+  </html>
   
