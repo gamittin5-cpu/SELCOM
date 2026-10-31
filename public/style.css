@@ -26,7 +26,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Balanced, well-spaced medium container viewport */
+/* Medium container viewport */
 .app-container {
   width: 100%;
   max-width: 440px;
@@ -52,7 +52,7 @@ html, body {
 .screen {
   display: none;
   flex-direction: column;
-  padding: 20px;
+  padding: 16px;
   height: 100%;
   width: 100%;
   overflow-y: auto;
@@ -70,19 +70,25 @@ html, body {
   background-color: #FFFFFF;
 }
 
-/* Language Switcher Top Bar */
-.lang-switch-container {
+/* Top Floating Language Switcher Pill (Matching Reference) */
+.top-lang-pill-wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  background-color: rgba(0, 0, 0, 0.15);
+  justify-content: flex-start;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
+.lang-pill-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
 .lang-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
   color: #FFFFFF;
 }
@@ -90,8 +96,8 @@ html, body {
 .switch {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 24px;
+  width: 38px;
+  height: 20px;
 }
 
 .switch input { opacity: 0; width: 0; height: 0; }
@@ -107,8 +113,8 @@ html, body {
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 14px;
+  width: 14px;
   left: 3px;
   bottom: 3px;
   background-color: white;
@@ -116,83 +122,101 @@ html, body {
 }
 
 input:checked + .slider { background-color: #10B981; }
-input:checked + .slider:before { transform: translateX(20px); }
-.slider.round { border-radius: 24px; }
+input:checked + .slider:before { transform: translateX(18px); }
+.slider.round { border-radius: 20px; }
 .slider.round:before { border-radius: 50%; }
 
-/* Welcome Screen Styling (Balanced & Well-Spaced) */
-.selcom-logo-area { text-align: center; margin: 8px 0; }
-.selcom-brand { font-size: 34px; font-weight: 900; color: #FFFFFF; letter-spacing: 1.5px; }
+/* Welcome Screen Layout (Matching Reference 100%) */
+.welcome-content-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-evenly;
+}
+
+.selcom-logo-area { text-align: center; margin: 2px 0; }
+.selcom-brand { font-size: 36px; font-weight: 900; color: #FFFFFF; letter-spacing: 1px; }
 
 .welcome-heading-box {
   text-align: center;
   color: #FFFFFF;
-  margin-bottom: 16px;
+  margin: 4px 0;
 }
 
-.welcome-heading-box h2 { font-size: 19px; font-weight: 900; margin-bottom: 6px; letter-spacing: 0.5px; }
-.welcome-heading-box p { font-size: 12px; font-weight: 800; color: #E2E8F0; margin-bottom: 6px; }
-.welcome-heading-box small { font-size: 11px; color: #CBD5E1; line-height: 1.4; display: block; padding: 0 10px; font-weight: 700; }
+.welcome-heading-box h2 { font-size: 18px; font-weight: 900; margin-bottom: 3px; letter-spacing: 0.5px; }
+.welcome-heading-box p { font-size: 11px; font-weight: 800; color: #E2E8F0; margin-bottom: 4px; }
+.welcome-heading-box small { font-size: 10px; color: #CBD5E1; line-height: 1.35; display: block; padding: 0 4px; font-weight: 700; }
 
 .critical-alert-box {
   background-color: #FFC107;
   border: 1.5px solid #FFA000;
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   color: #1E293B;
-  margin-bottom: 16px;
+  margin: 4px 0;
 }
 
 .alert-title-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
-.alert-title-row h4 { font-size: 14px; font-weight: 900; color: #78350F; letter-spacing: 0.5px; }
+.alert-circle-icon {
+  background-color: #D32F2F;
+  color: #FFFFFF;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.alert-title-row h4 { font-size: 13px; font-weight: 900; color: #78350F; letter-spacing: 0.5px; }
 
 .critical-alert-box p {
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: 10px;
+  line-height: 1.4;
   font-weight: 800;
   text-align: center;
 }
 
-/* Tanzania Flag Banner Box (Clear & Visible) */
-.flag-banner-box {
-  background-color: #032042;
-  border-radius: 10px;
-  padding: 12px;
+/* Flag Box */
+.flag-image-box {
   text-align: center;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  margin: 4px 0;
 }
 
-.tz-flag-stripes {
+.tz-flag-card {
   width: 100%;
-  height: 50px;
-  border-radius: 6px;
+  max-width: 280px;
+  height: 110px;
+  margin: 0 auto 6px auto;
+  border-radius: 8px;
   overflow: hidden;
-  position: relative;
-  margin-bottom: 8px;
-  background: #0EA5E9;
-  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.25);
 }
 
-.stripe-green { width: 100%; height: 33%; background: #15803D; }
-.stripe-black { width: 100%; height: 33%; background: #0F172A; }
-.stripe-blue { width: 100%; height: 34%; background: #0284C7; }
+.tz-svg-flag {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-.flag-banner-box span { font-size: 11px; color: #FFFFFF; font-weight: 900; letter-spacing: 0.5px; }
+.flag-image-box span { font-size: 10.5px; color: #FFFFFF; font-weight: 900; letter-spacing: 0.3px; }
 
 /* Top Nav & Headers */
 .selcom-top-nav, .form-top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .nav-back-btn { background: none; border: none; color: #FFFFFF; font-size: 13px; font-weight: 900; cursor: pointer; }
@@ -242,7 +266,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: var(--selcom-blue);
   border: none;
   border-radius: 10px;
-  padding: 15px;
+  padding: 14px;
   font-size: 14px;
   font-weight: 900;
   cursor: pointer;
@@ -256,13 +280,14 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #FFFFFF;
   border: none;
   border-radius: 10px;
-  padding: 15px;
+  padding: 14px;
   font-size: 14px;
   font-weight: 900;
   cursor: pointer;
   width: 100%;
-  margin-top: auto;
+  margin-top: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  flex-shrink: 0;
 }
 
 .btn-orange-action {
@@ -296,7 +321,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #888888;
   border: none;
   border-radius: 10px;
-  padding: 15px;
+  padding: 14px;
   font-size: 14px;
   font-weight: 900;
   cursor: pointer;
@@ -528,4 +553,4 @@ input:checked + .slider:before { transform: translateX(20px); }
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
   }
-    
+  
