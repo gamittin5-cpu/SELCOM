@@ -1,7 +1,6 @@
 :root {
   --selcom-blue: #0A58CA;
   --selcom-dark-blue: #043985;
-  --selcom-light-blue: #E7F1FF;
   --selcom-red: #D32F2F;
   --text-dark: #111111;
   --text-muted: #555555;
@@ -43,7 +42,6 @@ html, body {
 @media (min-width: 481px) {
   .app-container {
     height: 100vh;
-    border-radius: 0;
   }
 }
 
@@ -51,7 +49,7 @@ html, body {
 .screen {
   display: none;
   flex-direction: column;
-  padding: 20px;
+  padding: 16px;
   height: 100%;
   width: 100%;
   overflow-y: auto;
@@ -69,19 +67,19 @@ html, body {
   background-color: #FFFFFF;
 }
 
-/* Language Toggle Switcher */
+/* Language Switcher Top Bar */
 .lang-switch-container {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  padding: 10px 0;
+  padding: 8px 0;
   background-color: rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
 
 .lang-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: #FFFFFF;
 }
@@ -89,15 +87,11 @@ html, body {
 .switch {
   position: relative;
   display: inline-block;
-  width: 46px;
-  height: 24px;
+  width: 42px;
+  height: 22px;
 }
 
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.switch input { opacity: 0; width: 0; height: 0; }
 
 .slider {
   position: absolute;
@@ -110,181 +104,192 @@ html, body {
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 16px;
+  width: 16px;
   left: 3px;
   bottom: 3px;
   background-color: white;
   transition: .4s;
 }
 
-input:checked + .slider {
-  background-color: #10B981;
-}
+input:checked + .slider { background-color: #10B981; }
+input:checked + .slider:before { transform: translateX(20px); }
+.slider.round { border-radius: 22px; }
+.slider.round:before { border-radius: 50%; }
 
-input:checked + .slider:before {
-  transform: translateX(22px);
-}
+/* Welcome Screen Styling (Medium Sized Layout) */
+.selcom-logo-area { text-align: center; margin: 6px 0; }
+.selcom-brand { font-size: 32px; font-weight: 900; color: #FFFFFF; letter-spacing: 1px; }
 
-.slider.round {
-  border-radius: 24px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-/* Header & Logos */
-.selcom-logo-area {
+.welcome-heading-box {
   text-align: center;
-  margin: 10px 0;
-}
-
-.selcom-brand {
-  font-size: 36px;
-  font-weight: 900;
   color: #FFFFFF;
-  letter-spacing: 1px;
+  margin-bottom: 12px;
 }
 
-.selcom-sub {
-  font-size: 13px;
-  color: #E2E8F0;
-  margin-top: 4px;
-  font-weight: 600;
+.welcome-heading-box h2 { font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+.welcome-heading-box p { font-size: 11px; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; }
+.welcome-heading-box small { font-size: 10px; color: #CBD5E1; line-height: 1.3; display: block; padding: 0 10px; }
+
+.critical-alert-box {
+  background-color: #FFC107;
+  border: 1px solid #FFA000;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #1E293B;
+  margin-bottom: 12px;
 }
 
-.selcom-header-sm {
-  text-align: center;
-  margin-bottom: 14px;
+.alert-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
-.selcom-brand-dark {
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--selcom-blue);
-}
+.alert-title-row h4 { font-size: 13px; font-weight: 900; color: #78350F; }
 
-.selcom-header-sm small {
-  font-size: 11px;
-  color: var(--text-muted);
+.critical-alert-box p {
+  font-size: 10.5px;
+  line-height: 1.4;
   font-weight: 700;
+  text-align: center;
 }
+
+.flag-banner-box {
+  background-color: #032042;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.tz-flag-stripes {
+  width: 100%;
+  height: 35px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 6px;
+  background: #0EA5E9;
+}
+
+.stripe-green { width: 100%; height: 33%; background: #15803D; }
+.stripe-black { width: 100%; height: 33%; background: #0F172A; }
+.stripe-blue { width: 100%; height: 34%; background: #0284C7; }
+
+.flag-banner-box span { font-size: 10px; color: #FFFFFF; font-weight: 700; }
+
+/* Top Nav & Headers */
+.selcom-top-nav, .form-top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.nav-back-btn { background: none; border: none; color: #FFFFFF; font-size: 13px; font-weight: 800; cursor: pointer; }
+.nav-back-dark { background: none; border: none; color: #043985; font-size: 13px; font-weight: 800; cursor: pointer; }
+
+.selcom-brand-sm { font-size: 20px; font-weight: 900; color: #FFFFFF; }
+.brand-row-header { display: flex; align-items: center; gap: 6px; }
+.selcom-brand-dark { font-size: 18px; font-weight: 900; color: #043985; }
+.mkonomi-badge { font-size: 10px; font-weight: 800; color: #475569; }
+
+.section-title-white { font-size: 18px; font-weight: 900; color: #FFFFFF; text-align: center; }
 
 /* Blue Card Box */
 .card-box-blue {
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 16px;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
 }
 
-.card-box-blue h3 {
-  font-size: 11px;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
+.card-box-blue h3 { font-size: 10px; font-weight: 800; color: #FFFFFF; margin-bottom: 4px; }
+.margin-top-15 { margin-top: 10px; }
+.margin-top-10 { margin-top: 6px; }
 
-.margin-top-15 { margin-top: 15px; }
-
-.slider-display-blue {
-  font-size: 20px;
-  font-weight: 900;
-  color: #4ADE80;
-  margin-bottom: 8px;
-}
-
-.range-blue {
-  width: 100%;
-  accent-color: #4ADE80;
-  margin-bottom: 6px;
-}
-
-.slider-limits {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #CBD5E1;
-  font-weight: 700;
-}
+.slider-display-blue { font-size: 18px; font-weight: 900; color: #4ADE80; margin-bottom: 6px; }
+.range-blue { width: 100%; accent-color: #4ADE80; margin-bottom: 4px; }
+.slider-limits { display: flex; justify-content: space-between; font-size: 9px; color: #CBD5E1; font-weight: 700; }
 
 .repayment-summary-box {
   background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 12px;
-  margin-top: 14px;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
   text-align: center;
 }
 
-.repayment-summary-box span {
-  font-size: 10px;
-  font-weight: 800;
-  color: #CBD5E1;
-}
-
-.repayment-summary-box h2 {
-  font-size: 24px;
-  font-weight: 900;
-  color: #F87171;
-  margin: 4px 0;
-}
-
-.divider-line {
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 8px 0;
-}
-
-.repayment-summary-box h4 {
-  font-size: 16px;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 4px;
-}
-
-.repayment-summary-box small {
-  font-size: 10px;
-  color: #94A3B8;
-}
+.repayment-summary-box span { font-size: 9px; font-weight: 800; color: #CBD5E1; }
+.repayment-summary-box h2 { font-size: 20px; font-weight: 900; color: #F87171; margin: 2px 0; }
+.divider-line { height: 1px; background-color: rgba(255, 255, 255, 0.2); margin: 6px 0; }
+.repayment-summary-box h4 { font-size: 14px; font-weight: 800; color: #FFFFFF; margin-bottom: 2px; }
+.repayment-summary-box small { font-size: 9px; color: #94A3B8; }
 
 /* Buttons */
 .btn-white-action {
   background-color: #FFFFFF;
   color: var(--selcom-blue);
   border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 15px;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 14px;
   font-weight: 900;
   cursor: pointer;
   width: 100%;
   margin-top: auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .btn-selcom-primary {
-  background-color: var(--selcom-blue);
+  background-color: #22C55E;
   color: #FFFFFF;
   border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 15px;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 14px;
   font-weight: 900;
   cursor: pointer;
   width: 100%;
   margin-top: auto;
+}
+
+.btn-orange-action {
+  background-color: #F97316;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-grey-action {
+  background-color: #64748B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .btn-selcom-disabled {
   background-color: #E2E8F0;
   color: #888888;
   border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 15px;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 14px;
   font-weight: 900;
   cursor: pointer;
   width: 100%;
@@ -299,32 +304,48 @@ input:checked + .slider:before {
   background: none;
   border: none;
   color: var(--selcom-blue);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 6px;
   text-decoration: underline;
 }
 
 /* Clean Form Styling */
-.login-header-text { margin-bottom: 16px; }
-.login-header-text h2 { font-size: 22px; font-weight: 900; color: var(--text-dark); }
-.login-header-text p { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+.form-container-box { display: flex; flex-direction: column; height: 100%; }
+.form-main-heading { font-size: 18px; font-weight: 900; color: var(--text-dark); text-align: center; }
+.step-counter-text { font-size: 11px; color: var(--text-muted); text-align: center; margin: 2px 0 6px 0; font-weight: 700; }
 
-.form-group-clean { margin-bottom: 18px; }
-.form-group-clean label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 800; }
+.progress-bar-line { width: 100%; height: 4px; background-color: #E2E8F0; border-radius: 2px; margin-bottom: 14px; overflow: hidden; }
+.progress-fill { height: 100%; background-color: #F97316; }
+
+.form-group-clean { margin-bottom: 12px; }
+.form-group-clean label { display: block; font-size: 10.5px; color: var(--text-muted); margin-bottom: 3px; font-weight: 800; }
+
+.input-select, .input-text, .input-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+  background-color: #FFFFFF;
+}
+
+.input-textarea { height: 65px; resize: none; }
 
 .phone-input-group {
   display: flex;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   background-color: #FFFFFF;
 }
 
 .flag-prefix {
-  padding: 0 10px;
-  font-size: 12px;
+  padding: 0 8px;
+  font-size: 11px;
   font-weight: 800;
   background-color: #F1F5F9;
   display: flex;
@@ -332,123 +353,139 @@ input:checked + .slider:before {
   border-right: 1px solid var(--border-color);
 }
 
-.input-text {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  outline: none;
+.helper-note { font-size: 9.5px; color: var(--text-muted); margin-top: 2px; display: block; font-weight: 700; }
+.form-row-two { display: flex; gap: 8px; }
+.form-row-two .form-group-clean { flex: 1; }
+
+.form-buttons-row { display: flex; gap: 8px; margin-top: auto; }
+
+.summary-box-card {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #F8FAFC;
+  margin-top: 8px;
 }
+
+.summary-box-card h4 { font-size: 12px; font-weight: 900; color: var(--text-dark); margin-bottom: 6px; }
+.sum-row { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
+.sum-row strong { color: var(--text-dark); font-weight: 900; }
+
+/* Login & OTP Box Styling */
+.selcom-header-sm { text-align: center; margin-bottom: 10px; }
+.selcom-brand-dark { font-size: 22px; font-weight: 900; color: var(--selcom-blue); }
+.login-header-text { margin-bottom: 12px; }
+.login-header-text h2 { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+.login-header-text p { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.3; }
 
 .pin-boxes-flex, .otp-boxes-flex {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   justify-content: center;
   align-items: center;
-  margin: 14px 0;
+  margin: 10px 0;
 }
 
 .pin-box-num {
-  width: 48px;
-  height: 50px;
+  width: 44px;
+  height: 46px;
   text-align: center;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 900;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 6px;
   outline: none;
 }
 
 .otp-box-num {
-  width: 38px;
-  height: 42px;
+  width: 36px;
+  height: 40px;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 900;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 6px;
   outline: none;
 }
 
-.pin-eye-icon { cursor: pointer; color: var(--selcom-blue); font-size: 18px; margin-left: 6px; }
-.forgot-link { margin-top: 8px; }
-.forgot-link a { font-size: 11px; font-weight: 800; color: var(--selcom-blue); text-decoration: none; }
-.login-action-bottom { margin-top: auto; padding-top: 16px; }
+.pin-eye-icon { cursor: pointer; color: var(--selcom-blue); font-size: 16px; margin-left: 4px; }
+.forgot-link { margin-top: 6px; }
+.forgot-link a { font-size: 10px; font-weight: 800; color: var(--selcom-blue); text-decoration: none; }
+.login-action-bottom { margin-top: auto; padding-top: 10px; }
 
 /* Surface Error Banner */
 .surface-error-banner {
   background-color: #FFEBEE;
   color: var(--selcom-red);
   border: 1px solid #FFCDD2;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 900;
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   display: none;
 }
 
 .surface-error-banner.active { display: block; }
 
 /* OTP Notice & Timer */
-.otp-card-container { text-align: center; margin-top: 10px; }
+.otp-card-container { text-align: center; margin-top: 6px; }
 .otp-success-notice {
   background-color: #E8F5E9;
   color: #2E7D32;
   border: 1px solid #C8E6C9;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
   font-weight: 800;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
-.timer-text { font-size: 12px; color: #E65100; font-weight: 800; margin-top: 10px; }
+.timer-text { font-size: 11px; color: #E65100; font-weight: 800; margin-top: 8px; }
 
 /* Success Screen */
 .align-center { text-align: center; }
-.margin-top-20 { margin-top: 20px; }
+.margin-top-20 { margin-top: 10px; }
 
 .success-icon {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   background-color: #E3F2FD;
   color: var(--selcom-blue);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 900;
-  margin: 0 auto 12px auto;
+  margin: 0 auto 10px auto;
 }
 
-.title-blue { color: var(--selcom-blue); font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+.title-blue { color: var(--selcom-blue); font-size: 18px; font-weight: 900; margin-bottom: 4px; }
 
 .approved-amount-box {
   background-color: var(--selcom-blue);
   color: #FFFFFF;
-  padding: 14px;
-  border-radius: 10px;
-  margin: 14px 0;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
 }
 
-.approved-amount-box span { font-size: 11px; opacity: 0.9; font-weight: 800; }
-.approved-amount-box h1 { font-size: 24px; font-weight: 900; }
+.approved-amount-box span { font-size: 10px; opacity: 0.9; font-weight: 800; }
+.approved-amount-box h1 { font-size: 22px; font-weight: 900; }
 
 .dormant-alert-card {
   background-color: #E8F5E9;
   border: 1px solid #C8E6C9;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 6px;
   text-align: left;
-  font-size: 12px;
+  font-size: 11px;
   color: #1B5E20;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-.dormant-alert-card h4 { color: #2E7D32; margin-bottom: 6px; font-weight: 900; }
+.dormant-alert-card h4 { color: #2E7D32; margin-bottom: 4px; font-weight: 900; }
 
 /* Loading Overlay */
 .loading-overlay {
@@ -465,13 +502,13 @@ input:checked + .slider:before {
 .loading-overlay.active { display: flex; }
 
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: 4px solid #E2E8F0;
   border-top: 4px solid var(--selcom-blue);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 @keyframes spin {
