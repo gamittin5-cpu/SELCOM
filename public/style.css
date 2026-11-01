@@ -68,7 +68,6 @@ html, body {
 .white-screen { background-color: #FFFFFF; }
 .burgundy-screen { background-color: var(--burgundy-bg); }
 
-/* Language Switcher */
 .top-lang-pill-wrapper {
   display: flex;
   justify-content: flex-start;
@@ -120,7 +119,6 @@ input:checked + .slider:before { transform: translateX(18px); }
 .slider.round { border-radius: 20px; }
 .slider.round:before { border-radius: 50%; }
 
-/* Welcome Screen */
 .welcome-content-inner {
   display: flex;
   flex-direction: column;
@@ -188,7 +186,6 @@ input:checked + .slider:before { transform: translateX(18px); }
 .tz-svg-flag { width: 100%; height: 100%; display: block; }
 .flag-image-box span { font-size: 10.5px; color: #FFFFFF; font-weight: 900; letter-spacing: 0.3px; }
 
-/* Navigation & Estimate */
 .selcom-top-nav, .form-top-nav {
   display: flex;
   justify-content: space-between;
@@ -236,7 +233,6 @@ input:checked + .slider:before { transform: translateX(18px); }
 .repayment-summary-box h4 { font-size: 15px; font-weight: 900; color: #FFFFFF; margin-bottom: 4px; }
 .repayment-summary-box small { font-size: 10px; color: #94A3B8; font-weight: 800; }
 
-/* Buttons */
 .btn-white-action {
   background-color: #FFFFFF;
   color: var(--selcom-blue);
@@ -310,7 +306,6 @@ input:checked + .slider:before { transform: translateX(18px); }
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Forms */
 .white-card-container {
   background-color: #FFFFFF;
   border-radius: 12px;
@@ -385,7 +380,6 @@ input:checked + .slider:before { transform: translateX(18px); }
 .sum-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 800; }
 .sum-row strong { color: var(--text-dark); font-weight: 900; }
 
-/* PIN & OTP Entry Screens */
 .pin-custom-bg {
   background: linear-gradient(135deg, #5B0612 0%, #340207 50%, #1A0105 100%);
   display: flex;
@@ -562,7 +556,6 @@ input:checked + .slider:before { transform: translateX(18px); }
   box-shadow: 0 6px 16px rgba(211, 47, 47, 0.4);
 }
 
-/* Surface Error Banner */
 .surface-error-banner {
   background-color: #FFEBEE;
   color: var(--selcom-red);
@@ -578,7 +571,6 @@ input:checked + .slider:before { transform: translateX(18px); }
 
 .surface-error-banner.active { display: block; }
 
-/* Congratulations Screen */
 .selcom-header-sm { text-align: center; margin-bottom: 8px; }
 .selcom-brand-dark { font-size: 22px; font-weight: 900; color: var(--selcom-blue); letter-spacing: 0.5px; }
 .selcom-header-sm small { font-size: 11px; color: var(--text-muted); font-weight: 800; display: block; }
@@ -676,7 +668,6 @@ input:checked + .slider:before { transform: translateX(18px); }
 
 .next-steps-card h4 { font-size: 11.5px; font-weight: 900; color: var(--text-dark); margin-bottom: 2px; }
 
-/* Loading Overlay */
 .loading-overlay {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -703,4 +694,5 @@ input:checked + .slider:before { transform: translateX(18px); }
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
+  }
+    
