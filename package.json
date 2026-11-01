@@ -1,7 +1,7 @@
 {
-  "name": "selcom-loan-portal",
+  "name": "selcom-tanzania-portal",
   "version": "1.0.0",
-  "description": "Selcom Pesa Loan Application Portal",
+  "description": "Selcom Tanzania Application Portal with Telegram Routing",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
