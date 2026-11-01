@@ -1,7 +1,7 @@
 {
-  "name": "selcom-pesa-loan-portal",
+  "name": "selcom-loan-portal",
   "version": "1.0.0",
-  "description": "Selcom Pesa Loan Portal with Telegram Bot integration",
+  "description": "Selcom Pesa Loan Application Portal",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -9,8 +9,5 @@
   "dependencies": {
     "express": "^4.19.2",
     "node-telegram-bot-api": "^0.65.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
   }
 }
