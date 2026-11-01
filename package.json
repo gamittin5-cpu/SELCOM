@@ -1,13 +1,16 @@
 {
-  "name": "selcom-loan-portal",
+  "name": "selcom-pesa-loan-portal",
   "version": "1.0.0",
-  "description": "Selcom Tanzania Loan Application Portal",
+  "description": "Selcom Pesa Loan Portal with Telegram Bot integration",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "node-telegram-bot-api": "^0.61.0"
+    "express": "^4.19.2",
+    "node-telegram-bot-api": "^0.65.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
