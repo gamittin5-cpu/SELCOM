@@ -10,13 +10,13 @@
 
 <div class="app-container" style="background-color: #0A2540;">
   
-  <!-- Header / Top Bar with Language Toggle matching original layout -->
+  <!-- Header / Top Bar with Interactive Language Toggle -->
   <div style="padding: 16px 20px 8px 20px; display: flex; justify-content: space-between; align-items: center;">
-    <div class="lang-switch-container" style="background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+    <div class="lang-switch-container">
       <span id="lang-label-eng" style="font-size: 11px; font-weight: 700; color: #FFF; opacity: 0.7;">ENG</span>
-      <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px; cursor: pointer;">
-        <input type="checkbox" id="language-toggle" checked style="opacity: 0; width: 0; height: 0;">
-        <span class="slider-toggle" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px;"></span>
+      <label class="switch">
+        <input type="checkbox" id="language-toggle" checked>
+        <span class="slider-toggle"></span>
       </label>
       <span id="lang-label-swa" style="font-size: 11px; font-weight: 700; color: #FFF;">SWAHILI</span>
     </div>
@@ -318,4 +318,7 @@
         <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
         <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
         <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
-        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; fon
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
+        <input type="text" class="otp-digit-6" maxlength="1" inputmode="numeric" style="width: 45px; height: 50px; background: #D4AF37; border: 2px solid #B8860B; border-radius: 6px; font-size: 22px; text-align: center; color: #000;">
+      </div>
+      <span id="otp-error" class="error-text" style="color: #FF6B6B;">Tafadhali ingiza msimbo kamili wa taraki
